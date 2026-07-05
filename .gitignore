@@ -36,8 +36,5 @@ Thumbs.db
 *.sln
 *.sw?
 
-# Docker
-*.dockerignore
-
 # Coverage
 coverage/

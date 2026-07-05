@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+
+# Build artefacts
+dist
+coverage
+
+# Environment files (never bake secrets into the image)
+.env
+.env.*
+
+# Source control
+.git
+.gitignore
+
+# Logs
+*.log
+logs/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Dev config files (not needed in the image)
+.eslintrc.cjs
+.prettierrc
+*.md
