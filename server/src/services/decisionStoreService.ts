@@ -1,9 +1,10 @@
 import type { AnalyzeIncidentResult, DecisionResult } from '@community-ai/shared';
+import type { OperationalContext } from '../knowledge/knowledgeService';
 
 export interface StoredDecision {
   incidentId: string;
   analysis: AnalyzeIncidentResult;
-  knowledgeContext?: any;
+  knowledgeContext?: OperationalContext;
   decision: DecisionResult;
   timestamp: string;
 }

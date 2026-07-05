@@ -28,6 +28,19 @@ export interface AnalyzeIncidentResult {
   summary: string;
 }
 
+interface TextContent {
+  text: string;
+}
+
+interface InlineDataContent {
+  inlineData: {
+    data: string;
+    mimeType: string;
+  };
+}
+
+type GeminiContentInput = TextContent | InlineDataContent;
+
 // ── Service ───────────────────────────────────────────────
 export class AIService {
   private ai: GoogleGenAI;
@@ -47,7 +60,7 @@ export class AIService {
    * Analyzes the given incident using Gemini 2.5 Flash and returns parsed JSON.
    */
   public async analyzeIncident(params: AnalyzeIncidentParams): Promise<AnalyzeIncidentResult> {
-    aiLogger.info('Starting incident analysis', { location: params.location, hasImage: !!params.image });
+    aiLogger.info('Starting incident analysis', { location: params.location, hasImage: String(!!params.image) });
 
     try {
       // 1. Prepare contents
@@ -55,7 +68,7 @@ export class AIService {
 Description: ${params.description}
 Location: ${params.location}`;
 
-      const contents: Array<Record<string, unknown>> = [
+      const contents: GeminiContentInput[] = [
         { text: userPrompt }
       ];
 
@@ -155,8 +168,7 @@ Location: ${params.location}`;
 
     } catch (error: unknown) {
       aiLogger.error('Failed to analyze incident', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      throw new Error(`AI Analysis failed: ${errorMessage}`);
+      throw new Error(`AI Analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }

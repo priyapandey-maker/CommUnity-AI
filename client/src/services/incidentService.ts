@@ -1,6 +1,5 @@
 import apiClient from './apiClient';
-
-import type { IncidentResponse, DecisionResult } from '@community-ai/shared';
+import type { IncidentResponse, IncidentApiResponse as SharedIncidentApiResponse } from '@community-ai/shared';
 
 // ── Types ─────────────────────────────────────────────────
 
@@ -55,7 +54,8 @@ export async function submitIncident(
   return data;
 }
 
-export type DecisionResponse = DecisionResult;
+export type DecisionResponse = SharedIncidentApiResponse;
+
 
 /**
  * GET /decision/:id
