@@ -1,14 +1,34 @@
 import { Request, Response, NextFunction } from 'express';
 import { KnowledgeService } from '../knowledge/knowledgeService';
 import { decisionEngineService } from '../services/decisionEngineService';
+import { decisionStoreService } from '../services/decisionStoreService';
 import type { IncidentAnalysisInput } from '../knowledge/knowledgeService';
 
 const knowledgeService = new KnowledgeService();
 
-export const getDecision = (_req: Request, res: Response): void => {
-  res.status(501).json({ message: 'Not Implemented' });
+/**
+ * Controller to fetch a specific decision from the decision store by ID.
+ * Returns 404 if the requested record does not exist.
+ */
+export const getDecision = (req: Request, res: Response): void => {
+  try {
+    const { id } = req.params;
+    const decisionRecord = decisionStoreService.getDecision(id);
+
+    if (!decisionRecord) {
+      res.status(404).json({ error: 'Decision not found' });
+      return;
+    }
+
+    res.status(200).json(decisionRecord);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error while retrieving decision record.' });
+  }
 };
 
+/**
+ * Controller to manually evaluate a decision based on analysis inputs.
+ */
 export const evaluateDecision = async (
   req: Request,
   res: Response,
@@ -30,4 +50,3 @@ export const evaluateDecision = async (
     next(error);
   }
 };
-

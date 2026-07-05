@@ -3,6 +3,7 @@ import { aiService } from './aiService';
 import { KnowledgeService } from '../knowledge/knowledgeService';
 import { decisionEngineService } from './decisionEngineService';
 import { ledgerService } from './ledgerService';
+import { decisionStoreService } from './decisionStoreService';
 import type { IncidentResponse } from '@community-ai/shared';
 
 // ── Types ─────────────────────────────────────────────────
@@ -46,6 +47,14 @@ export class IncidentService {
         priority: decision.priority,
         recommendation: decision.recommendation,
         decisionReadiness: decision.decisionReadiness,
+      });
+
+      // E2DP Step 5: Save complete analysis and decision to local memory store
+      decisionStoreService.storeDecision({
+        incidentId,
+        analysis,
+        knowledgeContext: context.operationalContext,
+        decision,
       });
 
       return {

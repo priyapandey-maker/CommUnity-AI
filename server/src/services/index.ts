@@ -3,3 +3,4 @@ export * from './incidentService';
 export * from './aiService';
 export * from './decisionEngineService';
 export * from './ledgerService';
+export * from './decisionStoreService';
