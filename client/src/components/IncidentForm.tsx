@@ -1,7 +1,11 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { Button, FormField, Input, Textarea, ImageUpload } from '@/components';
+import { Input } from './ui/Input';
+import { Textarea } from './ui/Textarea';
+import Button from './Button';
+import FormField from './FormField';
+import ImageUpload from './ImageUpload';
 
 /* ── Types ─────────────────────────────────────────────── */
 export interface IncidentFormValues {
@@ -30,7 +34,7 @@ export default function IncidentForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
-    register,
+    control,
     handleSubmit,
     watch,
     formState: { errors },
@@ -40,16 +44,10 @@ export default function IncidentForm() {
 
   const onSubmit = (data: IncidentFormValues) => {
     setIsSubmitting(true);
-
     const payload = { ...data, image: imageFile };
-
-    // No API yet — log to console as instructed
+    // No API yet — log form data as instructed
     console.log('[IncidentForm] Submitted payload:', payload);
-
-    // Simulate brief async
-    setTimeout(() => {
-      setIsSubmitting(false);
-    }, 800);
+    setTimeout(() => setIsSubmitting(false), 800);
   };
 
   return (
@@ -60,62 +58,67 @@ export default function IncidentForm() {
       className="rounded-2xl border border-gray-800 bg-gray-900/50 p-8 space-y-7"
     >
       {/* ── Description ──────────────────────────────── */}
-      <FormField
-        id="incident-description"
-        label="Incident Description"
-        required
-        error={errors.description?.message}
-        hint="Describe what happened — include as much detail as possible."
-      >
-        <div className="relative">
-          <Textarea
-            id="incident-description"
-            placeholder="e.g. A streetlight at the corner of Oak Ave and 5th St has been out for two weeks, creating a safety hazard at night…"
-            hasError={!!errors.description}
-            aria-describedby={errors.description ? 'incident-description-error' : undefined}
-            {...register('description', RULES.description)}
-          />
-          {/* Character counter */}
-          <span
-            className={[
-              'absolute bottom-3 right-3 text-xs tabular-nums',
-              descriptionValue.length > 1900 ? 'text-amber-400' : 'text-gray-600',
-            ].join(' ')}
-          >
-            {descriptionValue.length} / 2000
-          </span>
-        </div>
-      </FormField>
+      <div className="relative">
+        <Controller
+          name="description"
+          control={control}
+          rules={RULES.description}
+          defaultValue=""
+          render={({ field }) => (
+            <Textarea
+              {...field}
+              id="incident-description"
+              label="Incident Description *"
+              placeholder="e.g. A streetlight at the corner of Oak Ave and 5th St has been out for two weeks, creating a safety hazard at night…"
+              rows={5}
+              error={errors.description?.message}
+              hint="Describe what happened — include as much detail as possible."
+              fullWidth
+            />
+          )}
+        />
+        {/* Character counter — positioned below the textarea, right-aligned */}
+        <span
+          className={[
+            'block text-right text-xs tabular-nums mt-1 pr-1',
+            (descriptionValue?.length ?? 0) > 1900 ? 'text-amber-400' : 'text-gray-600',
+          ].join(' ')}
+        >
+          {descriptionValue?.length ?? 0} / 2000
+        </span>
+      </div>
 
       {/* ── Location ─────────────────────────────────── */}
-      <FormField
-        id="incident-location"
-        label="Location"
-        required
-        error={errors.location?.message}
-        hint="Street address, neighbourhood, or landmark."
-      >
-        <Input
-          id="incident-location"
-          type="text"
-          placeholder="e.g. Oak Ave & 5th St, Downtown"
-          hasError={!!errors.location}
-          aria-describedby={errors.location ? 'incident-location-error' : undefined}
-          {...register('location', RULES.location)}
-        />
-      </FormField>
+      <Controller
+        name="location"
+        control={control}
+        rules={RULES.location}
+        defaultValue=""
+        render={({ field }) => (
+          <Input
+            {...field}
+            id="incident-location"
+            label="Location *"
+            type="text"
+            placeholder="e.g. Oak Ave & 5th St, Downtown"
+            error={errors.location?.message}
+            hint="Street address, neighbourhood, or landmark."
+            fullWidth
+          />
+        )}
+      />
 
       {/* ── Image Upload ─────────────────────────────── */}
       <FormField
         id="incident-image"
         label="Supporting Image"
-        hint="Optional — attach a photo of the incident."
+        hint="Optional — attach a photo of the incident (JPG, PNG, WebP · max 5 MB)."
       >
         <ImageUpload onFileChange={setImageFile} />
       </FormField>
 
       {/* ── Actions ──────────────────────────────────── */}
-      <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-2 border-t border-gray-800">
+      <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4 border-t border-gray-800">
         <Button
           id="incident-cancel-btn"
           type="button"

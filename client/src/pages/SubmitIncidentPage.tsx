@@ -1,4 +1,5 @@
-import { PageHeader, IncidentForm } from '@/components';
+import { PageHeader } from '@/components';
+import IncidentForm from '@/components/IncidentForm';
 
 export default function SubmitIncidentPage() {
   return (
