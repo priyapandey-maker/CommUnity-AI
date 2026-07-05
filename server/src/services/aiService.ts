@@ -1,14 +1,12 @@
 import { GoogleGenAI, Type } from '@google/genai';
-import type { AnalyzeIncidentResult } from '@community-ai/shared';
-import { INCIDENT_UNDERSTANDING_SYSTEM_PROMPT } from '../prompts/incidentUnderstanding';
+import { INCIDENT_UNDERSTANDING_SYSTEM_PROMPT } from '../prompts';
 
 // ── Simple Logger ─────────────────────────────────────────
-// ── Simple Logger ─────────────────────────────────────────
 const aiLogger = {
-  info: (msg: string, meta?: Record<string, unknown>) => {
+  info: (msg: string, meta?: any) => {
     console.log(`[AI INFO] ${msg}`, meta ? JSON.stringify(meta) : '');
   },
-  error: (msg: string, err?: unknown) => {
+  error: (msg: string, err?: any) => {
     console.error(`[AI ERROR] ${msg}`, err instanceof Error ? err.message : err);
   },
 };
@@ -17,10 +15,17 @@ const aiLogger = {
 export interface AnalyzeIncidentParams {
   description: string;
   location: string;
-  /**
-   * Optional base64 encoded image string (e.g. data:image/jpeg;base64,...)
-   */
   image?: string;
+}
+
+export interface AnalyzeIncidentResult {
+  issueType: string;
+  severity: string;
+  urgency: string;
+  affectedAsset: string;
+  possibleHazards: string[];
+  confidenceReason: string;
+  summary: string;
 }
 
 // ── Service ───────────────────────────────────────────────
@@ -46,16 +51,19 @@ export class AIService {
 
     try {
       // 1. Prepare contents
-      const contents: Array<Record<string, unknown>> = [
-        { text: `Description: ${params.description}\nLocation: ${params.location}` }
+      const userPrompt = `Incident Report to Analyze:
+Description: ${params.description}
+Location: ${params.location}`;
+
+      const contents: any[] = [
+        { text: userPrompt }
       ];
 
       // 2. Handle optional image
       if (params.image) {
-        // Strip data URL prefix if present and extract mime type
         const base64Data = params.image.replace(/^data:image\/\w+;base64,/, '');
         
-        let mimeType = 'image/jpeg'; // Default fallback
+        let mimeType = 'image/jpeg';
         const mimeMatch = params.image.match(/^data:(image\/\w+);base64,/);
         if (mimeMatch) {
           mimeType = mimeMatch[1];
@@ -69,7 +77,7 @@ export class AIService {
         });
       }
 
-      // 3. Define the structured output schema
+      // 3. Define the structured output schema based on standard prompts
       const config = {
         systemInstruction: INCIDENT_UNDERSTANDING_SYSTEM_PROMPT,
         responseMimeType: 'application/json',
@@ -78,35 +86,43 @@ export class AIService {
           properties: {
             issueType: {
               type: Type.STRING,
-              description: 'The primary classification of the incident',
+              description: 'Categorized type of the incident (e.g., Road Hazard, Water Leak, Downed Power Line)',
             },
             severity: {
               type: Type.STRING,
-              description: 'The severity of the incident (e.g., Low, Medium, High, Critical)',
+              description: 'Severity classification (e.g., Low, Medium, High, Critical)',
             },
             urgency: {
               type: Type.STRING,
-              description: 'The urgency of the incident (e.g., Low, Medium, High, Immediate)',
+              description: 'Urgency rating (e.g., Low, Medium, High, Immediate)',
             },
             affectedAsset: {
               type: Type.STRING,
-              description: 'The physical asset or infrastructure affected',
+              description: 'The physical asset or infrastructure affected (e.g., Pavement, Water Main, Power Grid)',
             },
             possibleHazards: {
               type: Type.ARRAY,
-              description: 'List of potential safety hazards identified',
-              items: { type: Type.STRING }
+              items: { type: Type.STRING },
+              description: 'Potential safety or environmental hazards identified',
             },
             confidenceReason: {
               type: Type.STRING,
-              description: 'Reasoning behind the severity and urgency assessments',
+              description: 'Justification for severity and urgency levels assigned',
             },
             summary: {
               type: Type.STRING,
-              description: 'A concise summary of the incident',
+              description: 'A concise, objective summary of the situation based ONLY on facts',
             },
           },
-          required: ['issueType', 'severity', 'urgency', 'affectedAsset', 'possibleHazards', 'confidenceReason', 'summary'],
+          required: [
+            'issueType',
+            'severity',
+            'urgency',
+            'affectedAsset',
+            'possibleHazards',
+            'confidenceReason',
+            'summary',
+          ],
         },
       };
 
@@ -130,17 +146,18 @@ export class AIService {
       // 5. Parse the JSON result
       const parsedResult: AnalyzeIncidentResult = JSON.parse(response.text);
       
-      aiLogger.info('Incident analysis completed successfully', { issueType: parsedResult.issueType, severity: parsedResult.severity });
+      aiLogger.info('Incident analysis completed successfully', { 
+        issueType: parsedResult.issueType, 
+        severity: parsedResult.severity 
+      });
       
       return parsedResult;
 
-    } catch (error: unknown) {
+    } catch (error: any) {
       aiLogger.error('Failed to analyze incident', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      throw new Error(`AI Analysis failed: ${errorMessage}`);
+      throw new Error(`AI Analysis failed: ${error.message || 'Unknown error'}`);
     }
   }
 }
 
 export const aiService = new AIService();
-

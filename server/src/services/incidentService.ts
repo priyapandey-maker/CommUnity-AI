@@ -22,19 +22,20 @@ export class IncidentService {
     const incidentId = randomUUID();
 
     try {
+      // E2DP Step 1: Gemini Understanding (AI analysis)
       const analysis = await aiService.analyzeIncident({
         description: data.description,
         location: data.location,
         image: data.image,
       });
 
-      // E2DP Step 1: Enrich with knowledge context
+      // E2DP Step 2: Enrich with knowledge context
       const context = await this.knowledgeService.getContext({
         ...analysis,
         location: data.location
       });
 
-      // E2DP Step 2: Deterministic decision engine evaluation
+      // E2DP Step 3: Deterministic decision engine evaluation
       const decision = decisionEngineService.evaluate(context);
 
       return {
@@ -43,11 +44,10 @@ export class IncidentService {
         decision,
       };
     } catch (error) {
-      // Gracefully handle Gemini failures
+      console.error('[IncidentService Error] Failed to process incident pipeline:', error);
       return {
         status: 'analysis_failed',
       };
     }
   }
 }
-

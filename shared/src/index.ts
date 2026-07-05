@@ -1,5 +1,3 @@
-import { DecisionResult } from './decisionTypes';
-
 export * from './decisionTypes';
 
 export interface AnalyzeIncidentResult {
