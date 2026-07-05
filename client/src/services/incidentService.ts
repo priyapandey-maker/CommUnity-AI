@@ -1,5 +1,7 @@
 import apiClient from './apiClient';
 
+import type { IncidentResponse } from '@community-ai/shared';
+
 // ── Types ─────────────────────────────────────────────────
 
 export interface IncidentPayload {
@@ -9,10 +11,7 @@ export interface IncidentPayload {
   image?: File | null;
 }
 
-export interface IncidentApiResponse {
-  id: string;
-  status: string;
-}
+export type IncidentApiResponse = IncidentResponse;
 
 // ── Helpers ───────────────────────────────────────────────
 

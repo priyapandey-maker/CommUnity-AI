@@ -1,4 +1,20 @@
-// Shared types and utilities for CommUnity AI
-// Add shared interfaces, enums, and helpers here as the project grows.
+export interface AnalyzeIncidentResult {
+  issueType: string;
+  severity: string;
+  urgency: string;
+  affectedAsset: string;
+  possibleHazards: string[];
+  confidenceReason: string;
+  summary: string;
+}
 
-export {};
+export interface IncidentApiResponse {
+  incidentId: string;
+  analysis: AnalyzeIncidentResult;
+}
+
+export interface IncidentFailedResponse {
+  status: 'analysis_failed';
+}
+
+export type IncidentResponse = IncidentApiResponse | IncidentFailedResponse;

@@ -38,7 +38,11 @@ export function useSubmitIncident(): UseSubmitIncidentReturn {
 
       try {
         const response = await submitIncident(payload);
-        navigate(`/decision/${response.id}`);
+        if ('incidentId' in response) {
+          navigate(`/decision/${response.incidentId}`);
+        } else {
+          setError('AI Analysis failed.');
+        }
       } catch (err) {
         const apiErr = parseApiError(err);
         setError(apiErr.message);

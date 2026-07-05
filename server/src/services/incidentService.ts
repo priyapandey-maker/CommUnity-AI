@@ -1,25 +1,20 @@
 import { randomUUID } from 'crypto';
-import { aiService, AnalyzeIncidentResult } from './aiService';
+import { aiService } from './aiService';
+import type { IncidentResponse } from '@community-ai/shared';
 
-export interface CreateIncidentDTO {
+// ── Types ─────────────────────────────────────────────────
+export interface IncidentPayload {
   description: string;
   location: string;
   image?: string;
 }
-
-export type IncidentResponse = {
-  incidentId: string;
-  analysis: AnalyzeIncidentResult;
-} | {
-  status: 'analysis_failed';
-};
 
 export class IncidentService {
   /**
    * Processes the received incident data and calls the AI service for analysis.
    * Note: No database storage is performed as per scaffold requirements.
    */
-  public async processIncident(data: CreateIncidentDTO): Promise<IncidentResponse> {
+  public async processIncident(data: IncidentPayload): Promise<IncidentResponse> {
     const incidentId = randomUUID();
 
     try {

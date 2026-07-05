@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   PageContainer,
@@ -80,7 +80,7 @@ export default function DecisionPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchDecision = async () => {
+  const fetchDecision = useCallback(async () => {
     if (!id) return;
     setLoading(true);
     setError(null);
@@ -93,11 +93,11 @@ export default function DecisionPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchDecision();
-  }, [id]);
+  }, [fetchDecision]);
 
   return (
     <PageContainer as="div" maxWidth="xl" className="py-8 min-h-screen flex flex-col justify-between">
