@@ -1,2 +1,4 @@
-// Page components are exported from here.
 export { default as LandingPage } from './LandingPage';
+export { default as SubmitIncidentPage } from './SubmitIncidentPage';
+export { default as DecisionPage } from './DecisionPage';
+export { default as LedgerPage } from './LedgerPage';

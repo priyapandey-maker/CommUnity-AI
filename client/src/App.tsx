@@ -1,11 +1,20 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LandingPage from '@/pages/LandingPage';
+import { AppLayout } from '@/layouts';
+import { LandingPage, SubmitIncidentPage, DecisionPage, LedgerPage } from '@/pages';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Standalone full-screen page */}
         <Route path="/" element={<LandingPage />} />
+
+        {/* Pages that share the AppLayout (Navbar + content wrapper) */}
+        <Route element={<AppLayout />}>
+          <Route path="/submit" element={<SubmitIncidentPage />} />
+          <Route path="/decision/:id" element={<DecisionPage />} />
+          <Route path="/ledger" element={<LedgerPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
