@@ -1,5 +1,7 @@
 import { randomUUID } from 'crypto';
 import { aiService } from './aiService';
+import { KnowledgeService } from '../knowledge/knowledgeService';
+import { decisionEngineService } from './decisionEngineService';
 import type { IncidentResponse } from '@community-ai/shared';
 
 // ── Types ─────────────────────────────────────────────────
@@ -10,9 +12,11 @@ export interface IncidentPayload {
 }
 
 export class IncidentService {
+  private knowledgeService = new KnowledgeService();
+
   /**
    * Processes the received incident data and calls the AI service for analysis.
-   * Note: No database storage is performed as per scaffold requirements.
+   * Then runs the Evidence-to-Decision Pipeline (E2DP) deterministically.
    */
   public async processIncident(data: IncidentPayload): Promise<IncidentResponse> {
     const incidentId = randomUUID();
@@ -24,9 +28,19 @@ export class IncidentService {
         image: data.image,
       });
 
+      // E2DP Step 1: Enrich with knowledge context
+      const context = await this.knowledgeService.getContext({
+        ...analysis,
+        location: data.location
+      });
+
+      // E2DP Step 2: Deterministic decision engine evaluation
+      const decision = decisionEngineService.evaluate(context);
+
       return {
         incidentId,
         analysis,
+        decision,
       };
     } catch (error) {
       // Gracefully handle Gemini failures
@@ -36,3 +50,4 @@ export class IncidentService {
     }
   }
 }
+

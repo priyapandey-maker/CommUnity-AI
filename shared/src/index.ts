@@ -1,3 +1,7 @@
+import { DecisionResult } from './decisionTypes';
+
+export * from './decisionTypes';
+
 export interface AnalyzeIncidentResult {
   issueType: string;
   severity: string;
@@ -11,6 +15,7 @@ export interface AnalyzeIncidentResult {
 export interface IncidentApiResponse {
   incidentId: string;
   analysis: AnalyzeIncidentResult;
+  decision: DecisionResult;
 }
 
 export interface IncidentFailedResponse {

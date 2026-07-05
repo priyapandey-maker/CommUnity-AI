@@ -44,30 +44,37 @@ function CheckShieldIcon() {
   );
 }
 
-function HazardIcon() {
+function DocumentReportIcon() {
   return (
-    <svg className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+    </svg>
+  );
+}
+
+function LightningBoltIcon() {
+  return (
+    <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
     </svg>
   );
 }
 
 // ── Helpers for badge coloring ────────────────────────────
 
-function getSeverityBadgeVariant(severity: string) {
-  const s = severity.toLowerCase();
-  if (s.includes('critical') || s.includes('high')) return 'error';
-  if (s.includes('medium') || s.includes('warn')) return 'warning';
-  if (s.includes('low') || s.includes('safe')) return 'success';
-  return 'info';
+function getPriorityBadgeVariant(priority: string) {
+  const p = priority.toUpperCase();
+  if (p === 'CRITICAL') return 'error';
+  if (p === 'HIGH') return 'warning';
+  if (p === 'MEDIUM') return 'info';
+  return 'success';
 }
 
-function getUrgencyBadgeVariant(urgency: string) {
-  const u = urgency.toLowerCase();
-  if (u.includes('immediate') || u.includes('critical') || u.includes('high')) return 'error';
-  if (u.includes('medium') || u.includes('medium')) return 'warning';
-  if (u.includes('low')) return 'success';
-  return 'info';
+function getReadinessBadgeVariant(readiness: string) {
+  const r = readiness.toUpperCase();
+  if (r === 'HIGH') return 'success';
+  if (r === 'MEDIUM') return 'warning';
+  return 'error';
 }
 
 // ── Component ─────────────────────────────────────────────
@@ -85,6 +92,9 @@ export default function DecisionPage() {
     setLoading(true);
     setError(null);
     try {
+      // NOTE: getDecision via GET is now properly supported if you implement a database.
+      // For now we might just be showing this via state transfer in a real app,
+      // but assuming the backend returns the decision by ID if implemented.
       const data = await getDecision(id);
       setDecision(data);
     } catch (err) {
@@ -113,16 +123,16 @@ export default function DecisionPage() {
           </button>
           {decision && (
             <Badge variant="primary" size="md">
-              Analysis Completed
+              E2DP Complete
             </Badge>
           )}
         </header>
 
         {/* Section Heading */}
         <SectionTitle
-          badge="AI Incident Analysis"
-          title={`Analysis Record #${id ?? '—'}`}
-          subtitle="Structural and environmental assessment compiled automatically by the Gemini Incident Understanding Engine."
+          badge="Evidence-to-Decision Pipeline"
+          title={`Decision Record #${id ?? '—'}`}
+          subtitle="Deterministic evaluation based on AI analysis and operational knowledge context."
           gradient
           align="left"
           className="mb-8"
@@ -131,8 +141,8 @@ export default function DecisionPage() {
         {/* LOADING STATE */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-24 gap-4 animate-fade-in">
-            <Spinner size="xl" color="primary" label="Fetching AI analysis..." />
-            <p className="text-slate-400 text-sm font-medium">Contacting AI Analysis Engine...</p>
+            <Spinner size="xl" color="primary" label="Evaluating evidence..." />
+            <p className="text-slate-400 text-sm font-medium">Running Deterministic Decision Engine...</p>
           </div>
         )}
 
@@ -143,7 +153,7 @@ export default function DecisionPage() {
               <AlertCircleIcon />
             </div>
             <h3 className="text-xl font-bold text-red-200 font-display mb-2">
-              Failed to Load Analysis
+              Failed to Load Decision
             </h3>
             <p className="text-sm text-red-400 mb-6 max-w-md mx-auto leading-relaxed">
               {error === 'Not Implemented' 
@@ -163,113 +173,98 @@ export default function DecisionPage() {
         {!loading && !error && decision && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-scale-in">
             
-            {/* Left Column: Summary and Hazards */}
+            {/* Left Column: Recommendation & Alternatives */}
             <div className="lg:col-span-8 flex flex-col gap-6">
               
-              {/* Executive Summary Card */}
+              {/* Primary Recommendation Card */}
               <Card variant="glass" padding="lg" className="relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-brand-500/10 rounded-full blur-3xl pointer-events-none" />
                 
                 <h3 className="text-lg font-bold text-slate-100 font-display mb-3 flex items-center gap-2">
                   <CheckShieldIcon />
-                  Executive Incident Summary
+                  Primary Action Recommendation
                 </h3>
-                <p className="text-slate-300 text-base leading-relaxed bg-surface-1 p-5 rounded-xl border border-line">
-                  {decision.summary || 'No summary text available.'}
+                <div className="flex items-center gap-4 mb-4">
+                  <Badge variant={getPriorityBadgeVariant(decision.priority)} size="md">
+                    {decision.priority} PRIORITY
+                  </Badge>
+                  <Badge variant={getReadinessBadgeVariant(decision.decisionReadiness)} size="md" dot>
+                    Readiness: {decision.decisionReadiness}
+                  </Badge>
+                </div>
+                <p className="text-slate-100 font-medium text-lg leading-relaxed bg-surface-1 p-5 rounded-xl border border-line">
+                  {decision.recommendation}
                 </p>
-                {decision.confidenceReason && (
+                {decision.explanation && (
                   <div className="mt-4">
                     <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">
-                      Analysis Reasoning & Confidence
+                      Deterministic Reasoning
                     </h4>
-                    <p className="text-xs text-slate-400 italic">
-                      "{decision.confidenceReason}"
+                    <p className="text-sm text-slate-400 italic bg-surface-2/50 p-3 rounded-lg border border-line">
+                      "{decision.explanation}"
                     </p>
                   </div>
                 )}
               </Card>
 
-              {/* Possible Hazards Card */}
+              {/* Alternatives Card */}
               <Card variant="default" padding="lg">
                 <h3 className="text-lg font-bold text-slate-200 font-display mb-4 flex items-center gap-2">
-                  <HazardIcon />
-                  Identified Safety Hazards
+                  <LightningBoltIcon />
+                  Alternative Actions
                 </h3>
-                {decision.possibleHazards && decision.possibleHazards.length > 0 ? (
-                  <div className="flex flex-wrap gap-2.5">
-                    {decision.possibleHazards.map((hazard, index) => (
-                      <span
-                        key={index}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-sm font-semibold bg-amber-950/40 text-amber-400 border border-amber-900/50"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                        {hazard}
-                      </span>
+                {decision.alternatives && decision.alternatives.length > 0 ? (
+                  <ul className="space-y-3">
+                    {decision.alternatives.map((alt, index) => (
+                      <li key={index} className="flex items-start gap-3 bg-surface-2/30 p-3 rounded-lg border border-line">
+                        <span className="mt-1 w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+                        <span className="text-sm text-slate-300">{alt}</span>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 ) : (
-                  <p className="text-sm text-slate-500">No immediate hazards identified by the engine.</p>
+                  <p className="text-sm text-slate-500">No alternatives generated.</p>
                 )}
               </Card>
             </div>
 
-            {/* Right Column: Metadata Panels */}
+            {/* Right Column: Evidence Table */}
             <div className="lg:col-span-4 flex flex-col gap-6">
               
-              {/* Classification Metrics Card */}
-              <Card variant="default" padding="lg" className="flex flex-col gap-5">
-                <h3 className="text-md font-bold text-slate-300 font-display border-b border-line pb-2 mb-1">
-                  Telemetry Metrics
+              <Card variant="default" padding="lg" className="flex flex-col gap-4">
+                <h3 className="text-md font-bold text-slate-300 font-display border-b border-line pb-2 mb-1 flex items-center gap-2">
+                  <DocumentReportIcon />
+                  Evidence Factors
                 </h3>
-
-                {/* Metric Item: Issue Type */}
-                <div>
-                  <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider block mb-1">
-                    Issue Type
-                  </span>
-                  <p className="text-sm font-semibold text-slate-100 bg-surface-3 px-3 py-2.5 rounded-xl border border-line">
-                    {decision.issueType || 'Unknown'}
-                  </p>
-                </div>
-
-                {/* Metric Item: Affected Asset */}
-                <div>
-                  <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider block mb-1">
-                    Affected Asset
-                  </span>
-                  <p className="text-sm font-semibold text-slate-100 bg-surface-3 px-3 py-2.5 rounded-xl border border-line">
-                    {decision.affectedAsset || 'None Identified'}
-                  </p>
-                </div>
-
-                {/* Metric Item: Severity */}
-                <div>
-                  <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider block mb-1">
-                    Severity Level
-                  </span>
-                  <div className="bg-surface-3 px-3 py-2.5 rounded-xl border border-line flex items-center justify-between">
-                    <span className="text-sm font-semibold text-slate-200">
-                      {decision.severity || 'Unknown'}
-                    </span>
-                    <Badge variant={getSeverityBadgeVariant(decision.severity || '')} dot>
-                      Status
-                    </Badge>
-                  </div>
-                </div>
-
-                {/* Metric Item: Urgency */}
-                <div>
-                  <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider block mb-1">
-                    Urgency Threshold
-                  </span>
-                  <div className="bg-surface-3 px-3 py-2.5 rounded-xl border border-line flex items-center justify-between">
-                    <span className="text-sm font-semibold text-slate-200">
-                      {decision.urgency || 'Unknown'}
-                    </span>
-                    <Badge variant={getUrgencyBadgeVariant(decision.urgency || '')} dot>
-                      Priority
-                    </Badge>
-                  </div>
+                
+                <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                  {decision.evidence && decision.evidence.map((ev, idx) => (
+                    <div key={idx} className="bg-surface-3 p-3 rounded-xl border border-line relative overflow-hidden">
+                      {/* Source Indicator Line */}
+                      <div className={`absolute left-0 top-0 bottom-0 w-1 ${ev.source === 'analysis' ? 'bg-indigo-500' : 'bg-emerald-500'}`} />
+                      
+                      <div className="ml-2">
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                            {ev.factor}
+                          </span>
+                          <span className="text-xs font-bold text-slate-500 bg-surface-1 px-1.5 py-0.5 rounded">
+                            W: {ev.weight}
+                          </span>
+                        </div>
+                        <p className="text-sm font-medium text-slate-200 break-words">
+                          {ev.value}
+                        </p>
+                        <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">
+                          Source: {ev.source}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {(!decision.evidence || decision.evidence.length === 0) && (
+                    <p className="text-sm text-slate-500 text-center py-4">No evidence collected.</p>
+                  )}
                 </div>
               </Card>
             </div>
@@ -279,7 +274,7 @@ export default function DecisionPage() {
 
       {/* Footer copyright section */}
       <footer className="mt-12 pt-6 border-t border-line text-center text-xs text-slate-600">
-        CommUnity AI — Decision transparency and immutability powered by Google Cloud.
+        CommUnity AI — E2DP Deterministic Engine powered by Google Cloud.
       </footer>
     </PageContainer>
   );
