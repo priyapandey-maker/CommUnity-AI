@@ -405,19 +405,54 @@ export default function DecisionPage() {
                   </div>
                 </div>
 
-                {/* Readiness Progress quotient */}
-                <div className="mb-6 bg-surface-1 p-4 rounded-xl border border-line">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs text-slate-400 font-medium">Confidence & Readiness Quotient</span>
-                    <span className="text-xs text-brand-400 font-bold">
-                      {getReadinessPercentage(decisionRecord.decision.decisionReadiness)}%
-                    </span>
+                {/* Readiness Progress quotient & Breakdown */}
+                <div className="mb-6 bg-surface-1 p-5 rounded-xl border border-line flex flex-col md:flex-row gap-6 items-start justify-between">
+                  <div className="w-full md:w-1/2 flex flex-col gap-2">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Confidence & Readiness Quotient</span>
+                      <span className="text-sm text-brand-400 font-bold">
+                        {getReadinessPercentage(decisionRecord.decision.decisionReadiness)}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-surface-4 h-2.5 rounded-full overflow-hidden">
+                      <div
+                        className="bg-gradient-to-r from-brand-500 to-emerald-400 h-full rounded-full transition-all duration-1000"
+                        style={{ width: `${getReadinessPercentage(decisionRecord.decision.decisionReadiness)}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                      Calculated from real-time community report ingestion, operational knowledge enrichment parameters, and decision framework rulesets.
+                    </p>
                   </div>
-                  <div className="w-full bg-surface-4 h-2 rounded-full overflow-hidden">
-                    <div
-                      className="bg-gradient-to-r from-brand-500 to-accent-400 h-full rounded-full transition-all duration-1000"
-                      style={{ width: `${getReadinessPercentage(decisionRecord.decision.decisionReadiness)}%` }}
-                    />
+                  
+                  <div className="w-full md:w-1/2 bg-surface-2/50 border border-line-strong p-4 rounded-lg flex flex-col gap-2">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Readiness Evaluation Checklist</span>
+                    <ul className="flex flex-col gap-1.5 text-xs text-slate-300">
+                      <li className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>{isFallback ? 'Rule-Based Incident Understanding' : 'AI Incident Understanding'}</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>Knowledge Context Enrichment</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>{decisionRecord.decision.evidence.length} Evidence Factors Evaluated</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>Deterministic Decision Rules Applied</span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
 
