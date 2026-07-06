@@ -38,11 +38,6 @@ const dotColorClasses: Record<BadgeVariant, string> = {
   info:    'bg-teal-500',
 };
 
-const sizeClasses: Record<BadgeSize, string> = {
-  sm: 'text-xs px-2    py-0.5',
-  md: 'text-xs px-2.5  py-1',
-};
-
 // ── Component ─────────────────────────────────────────────
 
 /**
@@ -51,21 +46,19 @@ const sizeClasses: Record<BadgeSize, string> = {
  * @example
  * <Badge variant="primary">Active</Badge>
  * <Badge variant="success" dot>Completed</Badge>
- * <Badge variant="warning" size="md">Pending Review</Badge>
+ * <Badge variant="warning">Pending Review</Badge>
  */
 export function Badge({
   children,
   variant  = 'default',
-  size     = 'sm',
   dot      = false,
   className,
 }: BadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full font-semibold leading-none select-none',
+        'inline-flex items-center gap-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider h-6 px-2.5 select-none leading-none border shrink-0',
         variantClasses[variant],
-        sizeClasses[size],
         className,
       )}
     >

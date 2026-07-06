@@ -1,3 +1,5 @@
+import { Badge } from './ui/Badge';
+
 interface PageHeaderProps {
   title: string;
   subtitle?: string;
@@ -8,9 +10,11 @@ export default function PageHeader({ title, subtitle, badge }: PageHeaderProps) 
   return (
     <div className="mb-6">
       {badge && (
-        <span className="inline-flex items-center gap-1.5 mb-3 px-2.5 py-1 text-xs font-semibold uppercase tracking-widest text-primary-700 bg-primary-50 border border-primary-200 rounded-full dark:text-primary-300 dark:bg-primary-950 dark:border-primary-900">
-          {badge}
-        </span>
+        <div className="mb-3">
+          <Badge variant="primary">
+            {badge}
+          </Badge>
+        </div>
       )}
       <h1
         className="text-2xl sm:text-3xl font-bold tracking-tight leading-snug"

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PageHeader, Button, Badge, Spinner } from '@/components';
+import { PageHeader, Button, Badge, Spinner, Card } from '@/components';
 import { getLedger, LedgerEntry, parseApiError } from '@/services';
 
 // ── Stat icons ────────────────────────────────────────────
@@ -109,9 +109,10 @@ export default function LedgerPage() {
       </section>
 
       {/* Table / List Container */}
-      <section
-        aria-label="Ledger entries"
-        className="rounded-lg border border-line bg-surface-1 overflow-hidden mb-8"
+      <Card
+        variant="default"
+        padding="none"
+        className="overflow-hidden mb-8"
       >
         {/* Table Header and Filters Bar */}
         <div className="p-4 border-b border-line bg-surface-2 flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -237,7 +238,7 @@ export default function LedgerPage() {
             </p>
           </div>
         )}
-      </section>
+      </Card>
 
       {/* Primary CTA */}
       <div>

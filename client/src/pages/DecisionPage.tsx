@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  PageContainer,
   Card,
   SectionTitle,
   Badge,
@@ -121,7 +120,7 @@ const getEvidenceInfluence = (factor: string, value: string): { text: string; tr
   const v = value.toLowerCase();
   switch (factor) {
     case 'schoolZone':
-      return v === 'true' 
+      return v === 'true'
         ? { text: '↑ Increased Priority (School Zone active)', trend: 'up' }
         : { text: '→ Standard Priority (Non-School Zone)', trend: 'neutral' };
     case 'recentRain':
@@ -166,7 +165,7 @@ const getEvidenceInfluence = (factor: string, value: string): { text: string; tr
 export default function DecisionPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
+
   const [decisionRecord, setDecisionRecord] = useState<DecisionResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -285,7 +284,7 @@ export default function DecisionPage() {
   };
 
   return (
-    <PageContainer as="div" maxWidth="xl" className="py-8 min-h-screen flex flex-col justify-between">
+    <div className="flex flex-col gap-6">
       <div>
         {/* Navigation Breadcrumb */}
         <header className="mb-8 flex items-center justify-between">
@@ -331,7 +330,7 @@ export default function DecisionPage() {
               Decision Record Not Found
             </h3>
             <p className="text-sm text-red-400 mb-6 max-w-md mx-auto leading-relaxed">
-              {error === 'Decision not found' 
+              {error === 'Decision not found'
                 ? 'The requested decision ID could not be located in the ledger store (returned 404).'
                 : error}
             </p>
@@ -354,10 +353,11 @@ export default function DecisionPage() {
                 <span>
                   AI-assisted analysis was temporarily unavailable. Your report was processed using our rule-based incident understanding to ensure uninterrupted service.
                 </span>
+
               </div>
             )}
 
-            <Card variant="default" padding="lg" className="border-line bg-surface-1">
+            <Card variant="default" padding="lg">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-wider text-muted">
@@ -395,7 +395,7 @@ export default function DecisionPage() {
                     Calculated from real-time community report ingestion, operational knowledge enrichment parameters, and decision framework rulesets.
                   </p>
                 </div>
-                
+
                 <div className="w-full md:w-1/2 bg-surface-1 border border-line-strong p-4 rounded-lg flex flex-col gap-2">
                   <span className="text-[10px] text-muted font-bold uppercase tracking-wider mb-1">Readiness Evaluation Checklist</span>
                   <ul className="flex flex-col gap-1.5 text-xs text-secondary">
@@ -429,16 +429,16 @@ export default function DecisionPage() {
             </Card>
 
             <Card variant="default" padding="lg">
-              <h3 className="text-base font-semibold mb-5 flex items-center gap-2 text-primary">
+              <h3 className="text-sm font-bold text-secondary font-display border-b border-line pb-2 mb-4 flex items-center gap-2">
                 <CheckShieldIcon />
-                Evidence Pipeline Ingestion & Influence Signals
+                <span>Evidence Pipeline Ingestion & Influence Signals</span>
               </h3>
 
               <div className="relative border-l border-line pl-6 ml-3 flex flex-col gap-8">
                 {decisionRecord.decision.evidence.map((item: EvidenceFactor, index: number) => {
                   const factorMeta = getFactorMeta(item.factor);
                   const influence = getEvidenceInfluence(item.factor, item.value);
-                  
+
                   const trendColors = {
                     up: 'text-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-500/20',
                     down: 'text-rose-500 bg-rose-50/50 dark:bg-rose-950/20 border-rose-500/20',
@@ -450,17 +450,17 @@ export default function DecisionPage() {
                       <span className="absolute -left-[38px] top-0.5 bg-surface-2 border border-line-strong w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-all duration-150 group-hover:border-primary-500">
                         {factorMeta.icon}
                       </span>
-                      
+
                       <div className="flex flex-col gap-2">
                         <div className="flex flex-wrap items-center gap-2">
                           <h4 className="text-sm font-semibold text-primary group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-150">
                             {factorMeta.title}
                           </h4>
-                          
+
                           <Badge variant={item.source === 'analysis' ? 'primary' : 'info'}>
                             {item.source === 'analysis' ? 'AI Analysis' : 'Knowledge Context'}
                           </Badge>
-                          
+
                           {item.weight !== undefined && (
                             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-surface-3 border border-line text-muted">
                               Weight: {item.weight}
@@ -472,7 +472,7 @@ export default function DecisionPage() {
                           <p className="text-xs text-muted leading-relaxed">
                             Resolved value: <span className="text-secondary font-medium font-mono bg-surface-3 px-1.5 py-0.5 rounded-lg border border-line">{item.value}</span>
                           </p>
-                          
+
                           <div className={`text-xs px-2.5 py-1 rounded-lg border font-medium flex items-center gap-1 ${trendColors[influence.trend]}`}>
                             {influence.text}
                           </div>
@@ -485,15 +485,15 @@ export default function DecisionPage() {
             </Card>
 
             <div className="grid grid-cols-1 gap-6">
-              <Card variant="glass" padding="md" className="border-line bg-surface-1">
-                <div className="px-2 py-3">
-                  <h3 className="text-xs font-semibold uppercase tracking-wider mb-5 flex items-center gap-2 text-muted">
-                    <svg className="w-4 h-4 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <Card variant="glass" padding="lg">
+                <div>
+                  <h3 className="text-sm font-bold text-secondary font-display border-b border-line pb-2 mb-4 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-primary-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                     </svg>
-                    Decision Intelligence Pipeline
+                    <span>Decision Intelligence Pipeline</span>
                   </h3>
-                  
+
                   <div className="hidden md:grid grid-cols-6 relative gap-4">
                     <div className="absolute top-6 left-[8.33%] right-[8.33%] h-0.5 bg-line pointer-events-none z-0">
                       <div className="h-full w-full bg-gradient-to-r from-primary-500 via-emerald-500 to-emerald-400 rounded-full" />
@@ -545,12 +545,12 @@ export default function DecisionPage() {
                 </div>
               </Card>
 
-              <Card variant="glass" padding="md" className="border-line">
-                <div className="px-2 py-1">
-                  <h3 className="text-xs font-semibold uppercase tracking-wider mb-4 text-muted">
+              <Card variant="glass" padding="lg">
+                <div>
+                  <h3 className="text-sm font-bold text-secondary font-display border-b border-line pb-2 mb-4">
                     Decision Influence Engine Mapping
                   </h3>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch relative">
                     <div className="bg-surface-2 p-4 rounded-lg border border-line flex flex-col justify-between">
                       <div>
@@ -562,7 +562,7 @@ export default function DecisionPage() {
                         <span>• {decisionRecord.decision.evidence.filter(e => e.source === 'context').length} Knowledge contexts enriched</span>
                       </div>
                     </div>
-                    
+
                     <div className="hidden md:flex items-center justify-center pointer-events-none" aria-hidden="true">
                       <svg className="w-6 h-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -647,21 +647,21 @@ export default function DecisionPage() {
               </div>
 
               <div className="md:col-span-1">
-                <Card variant="default" padding="lg" className="h-full flex flex-col justify-between">
+                <Card variant="default" padding="lg" className="h-full flex flex-col justify-start">
                   <div>
-                    <h3 className="text-sm font-bold text-secondary font-display mb-3">
+                    <h3 className="text-sm font-bold text-secondary font-display border-b border-line pb-2 mb-4">
                       Identified Safety Hazards
                     </h3>
                     {decisionRecord.analysis.possibleHazards && decisionRecord.analysis.possibleHazards.length > 0 ? (
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-col gap-2.5">
                         {decisionRecord.analysis.possibleHazards.map((hazard, index) => (
-                          <span
+                          <div
                             key={index}
-                            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-amber-950/40 text-amber-400 border border-amber-900/50"
+                            className="flex items-center gap-2.5 p-3 rounded-lg border border-amber-200 bg-amber-50/50 dark:border-amber-900/50 dark:bg-amber-950/20 text-xs font-semibold text-amber-800 dark:text-amber-200 transition-colors"
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                            {hazard}
-                          </span>
+                            <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" aria-hidden="true" />
+                            <span>{hazard}</span>
+                          </div>
                         ))}
                       </div>
                     ) : (
@@ -673,7 +673,7 @@ export default function DecisionPage() {
             </div>
 
             <Card variant="default" padding="lg">
-              <h3 className="text-sm font-bold text-secondary font-display mb-3">
+              <h3 className="text-sm font-bold text-secondary font-display border-b border-line pb-2 mb-4">
                 Alternatives Considered
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -689,7 +689,7 @@ export default function DecisionPage() {
             </Card>
 
             <Card variant="default" padding="lg">
-              <h3 className="text-sm font-bold text-secondary font-display mb-4">
+              <h3 className="text-sm font-bold text-secondary font-display border-b border-line pb-2 mb-4">
                 Executive Reasoning & Public Explanation
               </h3>
               <div className="flex flex-col gap-4">
@@ -719,6 +719,6 @@ export default function DecisionPage() {
       <footer className="mt-12 pt-5 border-t text-center text-xs text-muted border-line">
         CommUnity AI — Evidence-based decisions. Published to the public record.
       </footer>
-    </PageContainer>
+    </div>
   );
 }

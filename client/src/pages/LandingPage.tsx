@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Navbar, Button } from '@/components';
+import { Navbar, Button, Badge } from '@/components';
 
 // ── Feature card icons (SVG, Material-style) ──────────────
 
@@ -63,21 +63,22 @@ export default function LandingPage() {
       <Navbar />
 
       {/* Hero */}
-      <main className="flex-1 flex items-center justify-center px-6 pt-12 pb-10">
+      <main className="flex-1 flex flex-col items-center justify-center mx-auto max-w-6xl px-6 pt-16 pb-12 w-full">
         <div className="text-center max-w-2xl">
 
           {/* Status badge / Civic Trust Indicator */}
-          <span className="inline-flex items-center gap-1.5 mb-4 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary-700 bg-primary-50 border border-primary-200 rounded-lg dark:text-primary-300 dark:bg-primary-950 dark:border-primary-900 select-none">
-            <span className="w-1.5 h-1.5 rounded-full bg-decision-500 inline-block" aria-hidden="true" />
-            Official Municipal Accountability Portal
-          </span>
+          <div className="mb-6">
+            <Badge variant="primary">
+              Official Municipal Accountability Portal
+            </Badge>
+          </div>
 
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight mb-3 text-primary">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight mb-4 text-primary">
             Public Incident Resolution &{' '}
             <span className="text-primary-600 dark:text-primary-400">Decision Register</span>
           </h1>
 
-          <p className="text-base max-w-xl mx-auto mb-6 leading-relaxed text-secondary">
+          <p className="text-base max-w-xl mx-auto mb-8 leading-relaxed text-secondary">
             Authorized municipal platform enabling transparent, evidence-based civic decisions.
             Submit local issues, track resolution pathways, and audit the immutable public record.
           </p>
@@ -103,7 +104,7 @@ export default function LandingPage() {
           </div>
 
           {/* Trust Compliance Notice */}
-          <div className="mt-6 flex items-center justify-center gap-2 text-[11px] text-muted font-medium border-t border-line/45 pt-4">
+          <div className="mt-8 flex items-center justify-center gap-2 text-[11px] text-muted font-medium border-t border-line/45 pt-5">
             <svg className="w-4 h-4 text-decision-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
@@ -111,19 +112,19 @@ export default function LandingPage() {
           </div>
 
           {/* Feature strip */}
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+          <div className="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
             {FEATURES.map(({ icon, iconColor, iconBg, title, desc }) => (
               <div
                 key={title}
-                className="rounded-lg p-4 border border-line bg-surface-1 transition-colors duration-150"
+                className="rounded-xl p-6 border border-line bg-surface-1 shadow-card dark:shadow-card-dark transition-colors duration-150"
               >
                 <span
-                  className={`w-9 h-9 rounded-lg flex items-center justify-center mb-3 ${iconBg} ${iconColor}`}
+                  className={`w-9 h-9 rounded-lg flex items-center justify-center mb-4 ${iconBg} ${iconColor}`}
                   aria-hidden="true"
                 >
                   {icon}
                 </span>
-                <h2 className="text-xs font-semibold mb-1 text-primary uppercase tracking-wider">
+                <h2 className="text-xs font-semibold mb-2 text-primary uppercase tracking-wider">
                   {title}
                 </h2>
                 <p className="text-xs leading-relaxed text-secondary">

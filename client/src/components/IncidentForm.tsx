@@ -56,8 +56,7 @@ export default function IncidentForm() {
       id="incident-form"
       noValidate
       onSubmit={handleSubmit(onSubmit)}
-      className="rounded-xl border p-5 sm:p-6 space-y-5"
-      style={{ backgroundColor: 'var(--surface-1)', borderColor: 'var(--line)' }}
+      className="rounded-xl border border-line bg-surface-1 shadow-card dark:shadow-card-dark p-6 space-y-6"
     >
       {/* ── Location (1st in Hierarchy) ──────────────── */}
       <Controller

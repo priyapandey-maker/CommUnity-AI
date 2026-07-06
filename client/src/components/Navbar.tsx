@@ -94,7 +94,7 @@ export default function Navbar() {
         </NavLink>
 
         {/* Links + Theme toggle */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <ul className="flex items-center gap-1" role="list">
             {NAV_LINKS.map(({ to, label }) => (
               <li key={to}>
@@ -103,15 +103,12 @@ export default function Navbar() {
                   id={`nav-${label.toLowerCase().replace(/\s+/g, '-')}`}
                   className={({ isActive }) =>
                     [
-                      'px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-150 focus-ring',
+                      'px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-150 border focus-ring',
                       isActive
-                        ? 'bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300'
-                        : 'hover:bg-slate-100 dark:hover:bg-slate-800',
+                        ? 'bg-primary-50 text-primary-700 border-primary-200 dark:bg-primary-950 dark:text-primary-300 dark:border-primary-900'
+                        : 'border-transparent text-secondary hover:bg-slate-100 dark:hover:bg-slate-800',
                     ].join(' ')
                   }
-                  style={({ isActive }) => ({
-                    color: isActive ? undefined : 'var(--text-secondary)',
-                  })}
                 >
                   {label}
                 </NavLink>
@@ -121,8 +118,7 @@ export default function Navbar() {
 
           {/* Divider */}
           <span
-            className="mx-2 h-5 w-px"
-            style={{ backgroundColor: 'var(--line-strong)' }}
+            className="mx-1.5 h-4 w-px bg-line-strong"
             aria-hidden="true"
           />
 
@@ -132,10 +128,7 @@ export default function Navbar() {
             type="button"
             onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-            className="w-8 h-8 flex items-center justify-center rounded-md transition-colors duration-150 focus-ring"
-            style={{ color: 'var(--text-secondary)' }}
-            onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--surface-3)')}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+            className="w-8 h-8 flex items-center justify-center rounded-lg border border-transparent text-secondary hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-150 focus-ring"
           >
             {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
           </button>

@@ -1,14 +1,14 @@
-import { PageHeader } from '@/components';
+import { PageHeader, Card } from '@/components';
 import IncidentForm from '@/components/IncidentForm';
 
 const STEPS = [
   { step: '1', text: 'Your report is received and timestamped.' },
-  { step: '2', text: 'AI analyses the incident for severity and context.' },
+  { step: '2', text: 'Incident factors are evaluated for severity and context.' },
   { step: '3', text: 'A decision is generated and published to the public ledger.' },
 ];
 
 const TIPS = [
-  'Be specific about the street, neighbourhood, or landmark.',
+  'Be specific about the street, neighborhood, or landmark.',
   'Describe the impact on safety or the community.',
   'Include a photo when possible — it improves analysis accuracy.',
   'Avoid including personal information in your description.',
@@ -30,18 +30,18 @@ export default function SubmitIncidentPage() {
         </div>
 
         {/* ── Sidebar ──────────────────────────────── */}
-        <aside className="flex flex-col gap-4">
+        <aside className="flex flex-col gap-6">
 
           {/* What happens next */}
-          <div className="rounded-lg border border-line bg-surface-1 p-4">
-            <h2 className="text-xs font-semibold uppercase tracking-widest mb-3 text-muted">
+          <Card variant="default" padding="lg">
+            <h2 className="text-xs font-semibold uppercase tracking-widest mb-4 text-muted">
               What happens next
             </h2>
-            <ol className="flex flex-col gap-3" role="list">
+            <ol className="flex flex-col gap-5" role="list">
               {STEPS.map(({ step, text }) => (
-                <li key={step} className="flex gap-2.5">
+                <li key={step} className="flex items-center gap-4">
                   <span
-                    className="w-5.5 h-5.5 rounded-full bg-primary-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5"
+                    className="w-6 h-6 rounded-full bg-primary-600 text-white text-[11px] font-bold flex items-center justify-center shrink-0"
                     aria-hidden="true"
                   >
                     {step}
@@ -52,20 +52,20 @@ export default function SubmitIncidentPage() {
                 </li>
               ))}
             </ol>
-          </div>
+          </Card>
 
           {/* Tips */}
-          <div className="rounded-lg border border-line bg-surface-2 p-4">
+          <Card variant="elevated" padding="lg">
             <h2
-              className="text-xs font-semibold uppercase tracking-widest mb-2.5 text-primary-700 dark:text-primary-400"
+              className="text-xs font-semibold uppercase tracking-widest mb-3.5 text-primary-700 dark:text-primary-400"
             >
               Tips for a better report
             </h2>
-            <ul className="flex flex-col gap-2 text-xs">
+            <ul className="flex flex-col gap-2.5 text-xs">
               {TIPS.map((tip) => (
-                <li key={tip} className="flex gap-2 text-secondary">
+                <li key={tip} className="flex items-start gap-2.5 text-secondary">
                   <svg
-                    className="w-3.5 h-3.5 text-decision-600 dark:text-decision-400 shrink-0 mt-0.5"
+                    className="w-4 h-4 text-decision-600 dark:text-decision-400 shrink-0 mt-0.5"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                     aria-hidden="true"
@@ -76,11 +76,11 @@ export default function SubmitIncidentPage() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  {tip}
+                  <span>{tip}</span>
                 </li>
               ))}
             </ul>
-          </div>
+          </Card>
         </aside>
       </div>
     </>
