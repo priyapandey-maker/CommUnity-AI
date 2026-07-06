@@ -33,14 +33,8 @@ export default function SubmitIncidentPage() {
         <aside className="flex flex-col gap-4">
 
           {/* What happens next */}
-          <div
-            className="rounded-xl border p-5"
-            style={{ backgroundColor: 'var(--surface-1)', borderColor: 'var(--line)' }}
-          >
-            <h2
-              className="text-xs font-semibold uppercase tracking-widest mb-4"
-              style={{ color: 'var(--text-tertiary)' }}
-            >
+          <div className="rounded-lg border border-line bg-surface-1 p-5">
+            <h2 className="text-xs font-semibold uppercase tracking-widest mb-4 text-muted">
               What happens next
             </h2>
             <ol className="flex flex-col gap-4" role="list">
@@ -52,7 +46,7 @@ export default function SubmitIncidentPage() {
                   >
                     {step}
                   </span>
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                  <p className="text-sm leading-relaxed text-secondary">
                     {text}
                   </p>
                 </li>
@@ -61,13 +55,7 @@ export default function SubmitIncidentPage() {
           </div>
 
           {/* Tips */}
-          <div
-            className="rounded-xl border p-5"
-            style={{
-              backgroundColor: 'var(--surface-2)',
-              borderColor: 'var(--line)',
-            }}
-          >
+          <div className="rounded-lg border border-line bg-surface-2 p-5">
             <h2
               className="text-xs font-semibold uppercase tracking-widest mb-3 text-primary-700 dark:text-primary-400"
             >
@@ -75,7 +63,7 @@ export default function SubmitIncidentPage() {
             </h2>
             <ul className="flex flex-col gap-2.5">
               {TIPS.map((tip) => (
-                <li key={tip} className="flex gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                <li key={tip} className="flex gap-2 text-sm text-secondary">
                   <svg
                     className="w-4 h-4 text-decision-600 dark:text-decision-400 shrink-0 mt-0.5"
                     viewBox="0 0 20 20"

@@ -62,7 +62,7 @@ export function SectionTitle({
 
       <h2
         className={cn(
-          'font-display font-bold text-3xl sm:text-4xl tracking-tight text-slate-100',
+          'font-display font-bold text-3xl sm:text-4xl tracking-tight text-primary',
           gradient && 'gradient-text',
           titleClassName,
         )}
@@ -71,7 +71,7 @@ export function SectionTitle({
       </h2>
 
       {subtitle && (
-        <p className="text-slate-400 text-base sm:text-lg max-w-prose leading-relaxed">
+        <p className="text-secondary text-base sm:text-lg max-w-prose leading-relaxed">
           {subtitle}
         </p>
       )}

@@ -59,10 +59,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div
-      className="min-h-screen flex flex-col transition-colors duration-200"
-      style={{ backgroundColor: 'var(--bg-page)' }}
-    >
+    <div className="min-h-screen flex flex-col bg-surface transition-colors duration-200">
       <Navbar />
 
       {/* Hero */}
@@ -75,18 +72,12 @@ export default function LandingPage() {
             Community Governance Platform
           </span>
 
-          <h1
-            className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight mb-4"
-            style={{ color: 'var(--text-primary)' }}
-          >
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight mb-4 text-primary">
             Community Reports.{' '}
             <span className="gradient-text">Transparent Decisions.</span>
           </h1>
 
-          <p
-            className="text-lg max-w-xl mx-auto mb-10 leading-relaxed"
-            style={{ color: 'var(--text-secondary)' }}
-          >
+          <p className="text-lg max-w-xl mx-auto mb-10 leading-relaxed text-secondary">
             CommUnity AI transforms citizen incident reports into evidence-backed,
             auditable public decisions — putting governance accountability at the centre.
           </p>
@@ -116,11 +107,7 @@ export default function LandingPage() {
             {FEATURES.map(({ icon, iconColor, iconBg, title, desc }) => (
               <div
                 key={title}
-                className="rounded-xl p-5 border transition-colors duration-150"
-                style={{
-                  backgroundColor: 'var(--surface-1)',
-                  borderColor: 'var(--line)',
-                }}
+                className="rounded-lg p-5 border border-line bg-surface-1 transition-colors duration-150"
               >
                 <span
                   className={`w-10 h-10 rounded-lg flex items-center justify-center mb-4 ${iconBg} ${iconColor}`}
@@ -128,13 +115,10 @@ export default function LandingPage() {
                 >
                   {icon}
                 </span>
-                <h2
-                  className="text-sm font-semibold mb-1.5"
-                  style={{ color: 'var(--text-primary)' }}
-                >
+                <h2 className="text-sm font-semibold mb-1.5 text-primary">
                   {title}
                 </h2>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                <p className="text-sm leading-relaxed text-secondary">
                   {desc}
                 </p>
               </div>
@@ -144,10 +128,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer
-        className="py-5 text-center text-xs border-t"
-        style={{ color: 'var(--text-tertiary)', borderColor: 'var(--line)' }}
-      >
+      <footer className="py-5 text-center text-xs border-t border-line text-muted">
         CommUnity AI — Community-driven. Evidence-based. Transparent by design.
       </footer>
     </div>

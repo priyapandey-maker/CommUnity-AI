@@ -58,16 +58,16 @@ export function SecondaryButton({
       aria-busy={loading}
       className={cn(
         // base
-        'inline-flex items-center justify-center rounded-xl font-semibold',
+        'inline-flex items-center justify-center rounded-lg font-semibold',
         // colours — outlined / ghost style
-        'border border-line-strong text-slate-300 bg-transparent',
-        'hover:border-brand-500 hover:text-brand-300 hover:bg-brand-950/30',
-        'active:bg-brand-950/50 active:border-brand-600',
+        'border border-line-strong text-secondary bg-transparent',
+        'hover:border-primary-500 hover:text-primary-600 hover:bg-primary-50/50 dark:hover:text-primary-300 dark:hover:bg-primary-950/30',
+        'active:bg-primary-100/50 active:border-primary-600 dark:active:bg-primary-950/50 dark:active:border-primary-600',
         // transitions
         'transition-all duration-200 ease-smooth',
         // accessibility focus ring
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
-        'focus-visible:ring-offset-2 focus-visible:ring-offset-surface-1',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
+        'focus-visible:ring-offset-2',
         // size
         sizeClasses[size],
         // disabled / loading states

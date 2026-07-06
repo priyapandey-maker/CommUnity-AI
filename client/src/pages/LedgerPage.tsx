@@ -114,14 +114,13 @@ export default function LedgerPage() {
         {LEDGER_STATS.map(({ label, value, icon, color, bg }) => (
           <div
             key={label}
-            className="rounded-xl border p-4"
-            style={{ backgroundColor: 'var(--surface-1)', borderColor: 'var(--line)' }}
+            className="rounded-lg border border-line bg-surface-1 p-4"
           >
             <span className={`w-8 h-8 rounded-lg flex items-center justify-center mb-3 ${bg} ${color}`} aria-hidden="true">
               {icon}
             </span>
-            <p className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{value}</p>
-            <p className="text-xs mt-0.5 font-medium" style={{ color: 'var(--text-tertiary)' }}>{label}</p>
+            <p className="text-xl font-bold text-primary">{value}</p>
+            <p className="text-xs mt-0.5 font-medium text-muted">{label}</p>
           </div>
         ))}
       </section>
@@ -129,14 +128,13 @@ export default function LedgerPage() {
       {/* Table / List Container */}
       <section
         aria-label="Ledger entries"
-        className="rounded-xl border overflow-hidden mb-8"
-        style={{ backgroundColor: 'var(--surface-1)', borderColor: 'var(--line)' }}
+        className="rounded-lg border border-line bg-surface-1 overflow-hidden mb-8"
       >
         {/* Loading */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <Spinner size="lg" color="primary" label="Loading decision register..." />
-            <p className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>
+            <p className="text-xs font-medium text-muted">
               Reading public register…
             </p>
           </div>
@@ -149,7 +147,7 @@ export default function LedgerPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <p className="text-sm font-medium text-red-600 dark:text-red-400">Failed to load ledger records</p>
-            <p className="text-xs max-w-sm" style={{ color: 'var(--text-tertiary)' }}>{error}</p>
+            <p className="text-xs max-w-sm text-muted">{error}</p>
             <Button variant="secondary" onClick={fetchLedger}>Retry</Button>
           </div>
         )}
@@ -159,12 +157,11 @@ export default function LedgerPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse" role="table">
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--line)', backgroundColor: 'var(--surface-2)' }}>
+                <tr className="border-b border-line bg-surface-2">
                   {['Incident', 'Priority', 'Recommendation', 'Readiness', 'Recorded', 'Status'].map(h => (
                     <th
                       key={h}
-                      className="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest"
-                      style={{ color: 'var(--text-tertiary)' }}
+                      className="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-muted"
                     >
                       {h}
                     </th>
@@ -172,22 +169,17 @@ export default function LedgerPage() {
                 </tr>
               </thead>
               <tbody>
-                {ledger.map((entry, i) => (
+                {ledger.map((entry) => (
                   <tr
                     key={entry.incidentId}
                     onClick={() => navigate(`/decision/${entry.incidentId}`)}
-                    className="cursor-pointer transition-colors duration-100"
-                    style={{
-                      borderBottom: i < ledger.length - 1 ? '1px solid var(--line)' : undefined,
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--surface-2)')}
-                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+                    className="border-b border-line/60 hover:bg-surface-2 cursor-pointer transition-colors duration-100 last:border-b-0"
                   >
                     <td className="px-5 py-4">
-                      <div className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+                      <div className="text-sm font-semibold text-primary">
                         {entry.issueType || 'Unknown Issue'}
                       </div>
-                      <div className="text-xs mt-0.5 font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                      <div className="text-xs mt-0.5 font-mono text-muted">
                         #{entry.incidentId.substring(0, 8)}
                       </div>
                     </td>
@@ -196,7 +188,7 @@ export default function LedgerPage() {
                         {entry.priority}
                       </Badge>
                     </td>
-                    <td className="px-5 py-4 text-sm max-w-xs" style={{ color: 'var(--text-secondary)' }}>
+                    <td className="px-5 py-4 text-sm max-w-xs text-secondary">
                       {entry.recommendation}
                     </td>
                     <td className="px-5 py-4">
@@ -204,7 +196,7 @@ export default function LedgerPage() {
                         {entry.decisionReadiness}
                       </Badge>
                     </td>
-                    <td className="px-5 py-4 text-sm whitespace-nowrap" style={{ color: 'var(--text-tertiary)' }}>
+                    <td className="px-5 py-4 text-sm whitespace-nowrap text-muted">
                       {formatTimestamp(entry.timestamp)}
                     </td>
                     <td className="px-5 py-4">
@@ -225,10 +217,10 @@ export default function LedgerPage() {
             <svg className="w-10 h-10 text-slate-300 dark:text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.25} aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
-            <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-sm font-medium text-secondary">
               No decisions recorded yet.
             </p>
-            <p className="text-xs max-w-xs" style={{ color: 'var(--text-tertiary)' }}>
+            <p className="text-xs max-w-xs text-muted">
               Entries will appear here once community incidents are submitted and analysed.
             </p>
           </div>

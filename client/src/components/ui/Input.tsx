@@ -46,7 +46,7 @@ export function Input({
       {label && (
         <label
           htmlFor={id}
-          className="text-sm font-medium text-slate-300 select-none"
+          className="text-sm font-medium text-secondary select-none"
         >
           {label}
         </label>
@@ -55,7 +55,7 @@ export function Input({
       <div className="relative flex items-center">
         {leftIcon && (
           <span
-            className="absolute left-3 flex items-center text-slate-500 pointer-events-none"
+            className="absolute left-3 flex items-center text-muted pointer-events-none"
             aria-hidden="true"
           >
             {leftIcon}
@@ -75,8 +75,8 @@ export function Input({
           }
           className={cn(
             // base
-            'h-10 w-full rounded-xl bg-surface-3 border text-sm text-slate-100',
-            'placeholder:text-slate-600',
+            'h-10 w-full rounded-lg bg-[var(--surface-1)] border border-line text-sm text-primary',
+            'placeholder:text-muted/65',
             'transition-all duration-200 ease-smooth',
             // focus
             'focus:outline-none focus:ring-2',
@@ -86,7 +86,7 @@ export function Input({
             // state colours
             hasError
               ? 'border-red-500 focus:ring-red-500/40 focus:border-red-500'
-              : 'border-line hover:border-line-strong focus:ring-brand-500/40 focus:border-brand-500',
+              : 'border-line hover:border-line-strong focus:ring-primary-500/40 focus:border-primary-500',
             // disabled
             rest.disabled && 'opacity-50 cursor-not-allowed',
             className,
@@ -95,7 +95,7 @@ export function Input({
 
         {rightIcon && (
           <span
-            className="absolute right-3 flex items-center text-slate-500 pointer-events-none"
+            className="absolute right-3 flex items-center text-muted pointer-events-none"
             aria-hidden="true"
           >
             {rightIcon}
@@ -104,12 +104,12 @@ export function Input({
       </div>
 
       {hasError && (
-        <p id={`${id}-error`} role="alert" className="text-xs text-red-400">
+        <p id={`${id}-error`} role="alert" className="text-xs text-red-500 font-medium">
           {error}
         </p>
       )}
       {!hasError && hint && (
-        <p id={`${id}-hint`} className="text-xs text-slate-500">
+        <p id={`${id}-hint`} className="text-xs text-muted">
           {hint}
         </p>
       )}

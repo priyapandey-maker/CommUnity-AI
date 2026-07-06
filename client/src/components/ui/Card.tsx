@@ -19,14 +19,10 @@ export interface CardProps extends HTMLAttributes<HTMLElement> {
 // ── Style maps ────────────────────────────────────────────
 
 const variantClasses: Record<CardVariant, string> = {
-  // Clean default: uses surface CSS vars — works in both themes
-  default:  'bg-[var(--surface-1)] border border-[var(--line)] shadow-[var(--card-shadow)]',
-  // Frosted glass: uses .glass utility which adapts to theme
+  default:  'bg-surface-1 border border-line shadow-card dark:shadow-card-dark',
   glass:    'glass',
-  // Emphasized border — for decision/alert cards
-  bordered: 'bg-[var(--surface-1)] border-2 border-[var(--line-strong)]',
-  // Slightly elevated surface
-  elevated: 'bg-[var(--surface-2)] border border-[var(--line)] shadow-[var(--card-shadow)]',
+  bordered: 'bg-surface-1 border-2 border-line-strong',
+  elevated: 'bg-surface-2 border border-line shadow-card dark:shadow-card-dark',
 };
 
 const paddingClasses: Record<CardPadding, string> = {

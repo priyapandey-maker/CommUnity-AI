@@ -21,11 +21,11 @@ export default function FormField({
     <div className="flex flex-col gap-1.5">
       <label
         htmlFor={id}
-        className="text-sm font-semibold text-gray-300 flex items-center gap-1"
+        className="text-sm font-semibold text-secondary flex items-center gap-1"
       >
         {label}
         {required && (
-          <span className="text-indigo-400" aria-hidden="true">
+          <span className="text-primary-500" aria-hidden="true">
             *
           </span>
         )}
@@ -34,11 +34,11 @@ export default function FormField({
       {children}
 
       {hint && !error && (
-        <p className="text-xs text-gray-500">{hint}</p>
+        <p className="text-xs text-muted">{hint}</p>
       )}
 
       {error && (
-        <p id={`${id}-error`} role="alert" className="text-xs text-red-400 flex items-center gap-1">
+        <p id={`${id}-error`} role="alert" className="text-xs text-red-500 font-semibold flex items-center gap-1">
           <svg
             aria-hidden="true"
             className="w-3.5 h-3.5 shrink-0"

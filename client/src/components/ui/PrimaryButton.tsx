@@ -32,14 +32,14 @@ const sizeClasses: Record<PrimaryButtonSize, string> = {
 
 const variantClasses: Record<PrimaryButtonVariant, string> = {
   solid: [
-    'bg-brand-600 text-white',
-    'hover:bg-brand-500 active:bg-brand-700',
-    'shadow-glow-xs hover:shadow-glow-sm',
+    'bg-primary-600 text-white border border-transparent',
+    'hover:bg-primary-700 active:bg-primary-800',
+    'shadow-sm',
   ].join(' '),
   gradient: [
-    'bg-gradient-to-r from-brand-600 to-accent-600 text-white',
-    'hover:from-brand-500 hover:to-accent-500',
-    'shadow-glow-xs hover:shadow-glow-sm',
+    'bg-gradient-to-r from-primary-600 to-primary-700 text-white border border-transparent',
+    'hover:from-primary-500 hover:to-primary-600',
+    'shadow-sm',
   ].join(' '),
 };
 
@@ -74,11 +74,11 @@ export function PrimaryButton({
       aria-busy={loading}
       className={cn(
         // base
-        'inline-flex items-center justify-center rounded-xl font-semibold',
-        'transition-all duration-200 ease-smooth',
+        'inline-flex items-center justify-center rounded-lg font-semibold',
+        'transition-all duration-150 ease-smooth',
         // accessibility focus ring
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
-        'focus-visible:ring-offset-2 focus-visible:ring-offset-surface-1',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
+        'focus-visible:ring-offset-2',
         // size
         sizeClasses[size],
         // variant
