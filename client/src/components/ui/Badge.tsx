@@ -18,28 +18,29 @@ export interface BadgeProps {
 }
 
 // ── Style maps ────────────────────────────────────────────
+// Uses Tailwind static classes for both light and dark modes.
 
 const variantClasses: Record<BadgeVariant, string> = {
-  default: 'bg-surface-4    text-slate-300    border border-line',
-  primary: 'bg-brand-950    text-brand-300    border border-brand-800',
-  success: 'bg-emerald-950  text-emerald-400  border border-emerald-900',
-  warning: 'bg-amber-950    text-amber-400    border border-amber-900',
-  error:   'bg-red-950      text-red-400      border border-red-900',
-  info:    'bg-sky-950      text-sky-400      border border-sky-900',
+  default: 'bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+  primary: 'bg-primary-50 text-primary-700 border border-primary-200 dark:bg-primary-950 dark:text-primary-300 dark:border-primary-800',
+  success: 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-900',
+  warning: 'bg-amber-50  text-amber-700  border border-amber-200  dark:bg-amber-950  dark:text-amber-400  dark:border-amber-900',
+  error:   'bg-red-50    text-red-700    border border-red-200    dark:bg-red-950    dark:text-red-400    dark:border-red-900',
+  info:    'bg-teal-50   text-teal-700   border border-teal-200   dark:bg-teal-950   dark:text-teal-400   dark:border-teal-900',
 };
 
 const dotColorClasses: Record<BadgeVariant, string> = {
   default: 'bg-slate-400',
-  primary: 'bg-brand-400',
-  success: 'bg-emerald-400',
-  warning: 'bg-amber-400',
-  error:   'bg-red-400',
-  info:    'bg-sky-400',
+  primary: 'bg-primary-500',
+  success: 'bg-emerald-500',
+  warning: 'bg-amber-500',
+  error:   'bg-red-500',
+  info:    'bg-teal-500',
 };
 
 const sizeClasses: Record<BadgeSize, string> = {
-  sm: 'text-xs  px-2   py-0.5',
-  md: 'text-sm  px-2.5 py-1',
+  sm: 'text-xs px-2    py-0.5',
+  md: 'text-xs px-2.5  py-1',
 };
 
 // ── Component ─────────────────────────────────────────────
@@ -48,8 +49,8 @@ const sizeClasses: Record<BadgeSize, string> = {
  * Badge — compact status label with optional dot indicator.
  *
  * @example
- * <Badge variant="primary">AI-Powered</Badge>
- * <Badge variant="success" dot>Active</Badge>
+ * <Badge variant="primary">Active</Badge>
+ * <Badge variant="success" dot>Completed</Badge>
  * <Badge variant="warning" size="md">Pending Review</Badge>
  */
 export function Badge({
@@ -62,7 +63,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full font-medium leading-none select-none',
+        'inline-flex items-center gap-1.5 rounded-full font-semibold leading-none select-none',
         variantClasses[variant],
         sizeClasses[size],
         className,

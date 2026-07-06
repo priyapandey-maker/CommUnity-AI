@@ -8,13 +8,23 @@ export default function PageHeader({ title, subtitle, badge }: PageHeaderProps) 
   return (
     <div className="mb-10">
       {badge && (
-        <span className="inline-block mb-3 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-indigo-400 bg-indigo-900/30 border border-indigo-800/50 rounded-full">
+        <span className="inline-flex items-center gap-1.5 mb-3 px-2.5 py-1 text-xs font-semibold uppercase tracking-widest text-primary-700 bg-primary-50 border border-primary-200 rounded-full dark:text-primary-300 dark:bg-primary-950 dark:border-primary-900">
           {badge}
         </span>
       )}
-      <h1 className="text-3xl font-extrabold text-white tracking-tight">{title}</h1>
+      <h1
+        className="text-2xl sm:text-3xl font-bold tracking-tight leading-snug"
+        style={{ color: 'var(--text-primary)' }}
+      >
+        {title}
+      </h1>
       {subtitle && (
-        <p className="mt-2 text-base text-gray-400 max-w-2xl leading-relaxed">{subtitle}</p>
+        <p
+          className="mt-2 text-base max-w-2xl leading-relaxed"
+          style={{ color: 'var(--text-secondary)' }}
+        >
+          {subtitle}
+        </p>
       )}
     </div>
   );

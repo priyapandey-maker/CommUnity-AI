@@ -10,17 +10,17 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    'bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-lg shadow-indigo-900/40',
+    'bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white shadow-sm border border-transparent',
   secondary:
-    'bg-gray-800 hover:bg-gray-700 active:bg-gray-900 text-gray-100 border border-gray-700',
+    'border text-sm font-medium transition-colors focus-ring rounded-lg',
   ghost:
-    'bg-transparent hover:bg-gray-800 active:bg-gray-900 text-gray-300 hover:text-white',
+    'bg-transparent text-sm font-medium transition-colors focus-ring rounded-lg',
 };
 
 const sizeClasses: Record<Size, string> = {
-  sm: 'px-4 py-2 text-sm',
-  md: 'px-6 py-2.5 text-base',
-  lg: 'px-8 py-3.5 text-base',
+  sm: 'px-3.5 py-2 text-sm',
+  md: 'px-5 py-2.5 text-sm',
+  lg: 'px-7 py-3 text-base',
 };
 
 export default function Button({
@@ -28,14 +28,32 @@ export default function Button({
   size = 'md',
   className = '',
   children,
+  style,
   ...props
 }: ButtonProps) {
+  const isSecondary = variant === 'secondary';
+  const isGhost     = variant === 'ghost';
+
   return (
     <button
       {...props}
+      style={{
+        ...(isSecondary ? {
+          backgroundColor: 'var(--surface-1)',
+          borderColor: 'var(--line-strong)',
+          color: 'var(--text-primary)',
+        } : {}),
+        ...(isGhost ? {
+          color: 'var(--text-secondary)',
+        } : {}),
+        ...style,
+      }}
       className={[
-        'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-950 disabled:opacity-50 disabled:cursor-not-allowed',
-        variantClasses[variant],
+        'inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-150',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
+        'disabled:opacity-50 disabled:cursor-not-allowed',
+        variant === 'primary' ? variantClasses.primary : '',
+        isSecondary || isGhost ? 'hover:opacity-80' : '',
         sizeClasses[size],
         className,
       ].join(' ')}

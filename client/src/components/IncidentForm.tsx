@@ -56,7 +56,8 @@ export default function IncidentForm() {
       id="incident-form"
       noValidate
       onSubmit={handleSubmit(onSubmit)}
-      className="rounded-2xl border border-gray-800 bg-gray-900/50 p-8 space-y-7"
+      className="rounded-xl border p-6 sm:p-8 space-y-6"
+      style={{ backgroundColor: 'var(--surface-1)', borderColor: 'var(--line)' }}
     >
       {/* ── Description ──────────────────────────────── */}
       <div className="relative">
@@ -124,11 +125,11 @@ export default function IncidentForm() {
         <div
           role="alert"
           id="incident-submit-error"
-          className="flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-900/10 px-4 py-3"
+          className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 dark:border-red-900/50 dark:bg-red-950/20"
         >
           <svg
             aria-hidden="true"
-            className="mt-0.5 w-4 h-4 shrink-0 text-red-400"
+            className="mt-0.5 w-4 h-4 shrink-0 text-red-600 dark:text-red-400"
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -139,14 +140,14 @@ export default function IncidentForm() {
             />
           </svg>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-red-400">Submission failed</p>
-            <p className="text-xs text-red-300/80 mt-0.5">{error}</p>
+            <p className="text-sm font-semibold text-red-700 dark:text-red-400">Submission failed</p>
+            <p className="text-xs text-red-600/80 mt-0.5 dark:text-red-300/80">{error}</p>
           </div>
           <button
             type="button"
             aria-label="Dismiss error"
             onClick={clearError}
-            className="text-red-500 hover:text-red-300 transition-colors"
+            className="text-red-500 hover:text-red-700 dark:hover:text-red-300 transition-colors"
           >
             <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
               <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22z" />
@@ -156,7 +157,10 @@ export default function IncidentForm() {
       )}
 
       {/* ── Actions ──────────────────────────────────── */}
-      <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4 border-t border-gray-800">
+      <div
+        className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-5 border-t"
+        style={{ borderColor: 'var(--line)' }}
+      >
         <Button
           id="incident-cancel-btn"
           type="button"

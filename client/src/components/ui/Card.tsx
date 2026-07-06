@@ -19,27 +19,32 @@ export interface CardProps extends HTMLAttributes<HTMLElement> {
 // ── Style maps ────────────────────────────────────────────
 
 const variantClasses: Record<CardVariant, string> = {
-  default:  'bg-surface-2 border border-line',
+  // Clean default: uses surface CSS vars — works in both themes
+  default:  'bg-[var(--surface-1)] border border-[var(--line)] shadow-[var(--card-shadow)]',
+  // Frosted glass: uses .glass utility which adapts to theme
   glass:    'glass',
-  bordered: 'bg-surface-2 border-2 border-line-strong',
-  elevated: 'bg-surface-3 border border-line shadow-card',
+  // Emphasized border — for decision/alert cards
+  bordered: 'bg-[var(--surface-1)] border-2 border-[var(--line-strong)]',
+  // Slightly elevated surface
+  elevated: 'bg-[var(--surface-2)] border border-[var(--line)] shadow-[var(--card-shadow)]',
 };
 
 const paddingClasses: Record<CardPadding, string> = {
   none: '',
   sm:   'p-4',
-  md:   'p-6',
-  lg:   'p-8',
+  md:   'p-5',
+  lg:   'p-6',
 };
 
 // ── Component ─────────────────────────────────────────────
 
 /**
  * Card — content container with four surface styles.
+ * All variants adapt to light and dark themes automatically.
  *
  * @example
  * <Card>Simple card</Card>
- * <Card variant="glass" padding="lg">Glassmorphism panel</Card>
+ * <Card variant="glass" padding="lg">Frosted panel</Card>
  * <Card as="article" variant="elevated" padding="sm">Elevated article</Card>
  */
 export function Card({
@@ -54,7 +59,7 @@ export function Card({
     <Component
       {...rest}
       className={cn(
-        'rounded-2xl',
+        'rounded-xl',
         variantClasses[variant],
         paddingClasses[padding],
         className,

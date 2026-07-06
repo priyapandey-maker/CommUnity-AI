@@ -3,11 +3,76 @@ import { useNavigate } from 'react-router-dom';
 import { PageHeader, Button, Badge, Spinner } from '@/components';
 import { getLedger, LedgerEntry, parseApiError } from '@/services';
 
+// ── Stat icons ────────────────────────────────────────────
+
+function DecisionsIcon() {
+  return (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+
+function HighPriorityIcon() {
+  return (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    </svg>
+  );
+}
+
+function ActiveIcon() {
+  return (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+    </svg>
+  );
+}
+
+function ReadinessIcon() {
+  return (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  );
+}
+
+// ── Helpers ───────────────────────────────────────────────
+
+const getPriorityBadgeVariant = (p: string) => {
+  const priority = p.toUpperCase();
+  if (priority === 'CRITICAL' || priority === 'HIGH') return 'error' as const;
+  if (priority === 'MEDIUM') return 'warning' as const;
+  return 'default' as const;
+};
+
+const getReadinessBadgeVariant = (r: string) => {
+  const readiness = r.toUpperCase();
+  if (readiness === 'HIGH') return 'success' as const;
+  if (readiness === 'MEDIUM') return 'warning' as const;
+  return 'default' as const;
+};
+
+const formatTimestamp = (isoString: string) => {
+  try {
+    return new Date(isoString).toLocaleString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  } catch {
+    return '—';
+  }
+};
+
+// ── Component ─────────────────────────────────────────────
+
 export default function LedgerPage() {
   const navigate = useNavigate();
-  const [ledger, setLedger] = useState<LedgerEntry[]>([]);
+  const [ledger, setLedger]   = useState<LedgerEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError]     = useState<string | null>(null);
 
   const fetchLedger = async () => {
     setLoading(true);
@@ -23,145 +88,129 @@ export default function LedgerPage() {
     }
   };
 
-  useEffect(() => {
-    fetchLedger();
-  }, []);
+  useEffect(() => { fetchLedger(); }, []);
 
-  // Calculate live stats
   const totalDecisions = ledger.length;
-  const criticalCount = ledger.filter(e => e.priority === 'CRITICAL' || e.priority === 'HIGH').length;
-  const activeCount = ledger.filter(e => e.status === 'received').length;
+  const criticalCount  = ledger.filter(e => e.priority === 'CRITICAL' || e.priority === 'HIGH').length;
+  const activeCount    = ledger.filter(e => e.status === 'received').length;
 
   const LEDGER_STATS = [
-    { label: 'Total Decisions', value: totalDecisions.toString(), icon: '⚖️' },
-    { label: 'High Priority', value: criticalCount.toString(), icon: '🚨' },
-    { label: 'Active Reports', value: activeCount.toString(), icon: '📋' },
-    { label: 'Avg. Readiness', value: totalDecisions > 0 ? 'HIGH' : '—', icon: '⏱️' },
+    { label: 'Total Decisions', value: totalDecisions.toString(), icon: <DecisionsIcon />, color: 'text-primary-600 dark:text-primary-400', bg: 'bg-primary-50 dark:bg-primary-950' },
+    { label: 'High Priority',   value: criticalCount.toString(),  icon: <HighPriorityIcon />, color: 'text-red-600 dark:text-red-400',     bg: 'bg-red-50 dark:bg-red-950' },
+    { label: 'Active Reports',  value: activeCount.toString(),    icon: <ActiveIcon />,    color: 'text-decision-600 dark:text-decision-400', bg: 'bg-decision-50 dark:bg-decision-950' },
+    { label: 'Avg. Readiness',  value: totalDecisions > 0 ? 'HIGH' : '—', icon: <ReadinessIcon />, color: 'text-evidence-600 dark:text-evidence-400', bg: 'bg-evidence-50 dark:bg-evidence-950' },
   ];
-
-  // Helper badge coloring
-  const getPriorityBadgeVariant = (p: string) => {
-    const priority = p.toUpperCase();
-    if (priority === 'CRITICAL' || priority === 'HIGH') return 'error';
-    if (priority === 'MEDIUM') return 'warning';
-    return 'default';
-  };
-
-  const getReadinessBadgeVariant = (r: string) => {
-    const readiness = r.toUpperCase();
-    if (readiness === 'HIGH') return 'success';
-    if (readiness === 'MEDIUM') return 'warning';
-    return 'default';
-  };
-
-  const formatTimestamp = (isoString: string) => {
-    try {
-      const date = new Date(isoString);
-      return date.toLocaleString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-    } catch {
-      return '—';
-    }
-  };
 
   return (
     <>
       <PageHeader
         badge="Transparency Ledger"
-        title="Decision Ledger"
-        subtitle="A complete, auditable record of every AI-assisted community decision. All entries are immutable and publicly accessible."
+        title="Public Decision Register"
+        subtitle="A complete, auditable record of every evidence-based community decision. All entries are immutable and publicly accessible."
       />
 
       {/* Stats row */}
-      <section aria-label="Ledger statistics" className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
-        {LEDGER_STATS.map(({ label, value, icon }) => (
+      <section aria-label="Ledger statistics" className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        {LEDGER_STATS.map(({ label, value, icon, color, bg }) => (
           <div
             key={label}
-            className="rounded-2xl border border-gray-800 bg-gray-900/50 p-5 hover:border-indigo-800 transition-colors duration-200"
+            className="rounded-xl border p-4"
+            style={{ backgroundColor: 'var(--surface-1)', borderColor: 'var(--line)' }}
           >
-            <span className="text-xl mb-2 block">{icon}</span>
-            <p className="text-2xl font-extrabold text-white">{value}</p>
-            <p className="text-xs text-gray-500 mt-1 font-medium">{label}</p>
+            <span className={`w-8 h-8 rounded-lg flex items-center justify-center mb-3 ${bg} ${color}`} aria-hidden="true">
+              {icon}
+            </span>
+            <p className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{value}</p>
+            <p className="text-xs mt-0.5 font-medium" style={{ color: 'var(--text-tertiary)' }}>{label}</p>
           </div>
         ))}
       </section>
 
       {/* Table / List Container */}
-      <section aria-label="Ledger entries" className="rounded-2xl border border-gray-800 bg-gray-900/50 overflow-hidden mb-8">
-        
-        {/* Loading Indicator */}
+      <section
+        aria-label="Ledger entries"
+        className="rounded-xl border overflow-hidden mb-8"
+        style={{ backgroundColor: 'var(--surface-1)', borderColor: 'var(--line)' }}
+      >
+        {/* Loading */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <Spinner size="lg" color="primary" label="Loading decision ledger..." />
-            <p className="text-xs text-gray-500 font-medium">Reading public ledger...</p>
+            <Spinner size="lg" color="primary" label="Loading decision register..." />
+            <p className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>
+              Reading public register…
+            </p>
           </div>
         )}
 
-        {/* Error Banner */}
+        {/* Error */}
         {!loading && error && (
           <div className="flex flex-col items-center justify-center py-16 px-6 text-center gap-4">
-            <span className="text-2xl">⚠️</span>
-            <p className="text-sm font-medium text-red-400">Failed to load ledger records</p>
-            <p className="text-xs text-gray-600 max-w-sm">{error}</p>
-            <Button variant="secondary" onClick={fetchLedger}>
-              Retry Fetch
-            </Button>
+            <svg className="w-8 h-8 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <p className="text-sm font-medium text-red-600 dark:text-red-400">Failed to load ledger records</p>
+            <p className="text-xs max-w-sm" style={{ color: 'var(--text-tertiary)' }}>{error}</p>
+            <Button variant="secondary" onClick={fetchLedger}>Retry</Button>
           </div>
         )}
 
-        {/* Data Present Table */}
+        {/* Data table */}
         {!loading && !error && ledger.length > 0 && (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse" role="table">
               <thead>
-                <tr className="border-b border-gray-800 bg-gray-900/80">
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-gray-500">Incident</th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-gray-500">Priority</th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-gray-500">Recommendation</th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-gray-500">Readiness</th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-gray-500">Timestamp</th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-gray-500">Status</th>
+                <tr style={{ borderBottom: '1px solid var(--line)', backgroundColor: 'var(--surface-2)' }}>
+                  {['Incident', 'Priority', 'Recommendation', 'Readiness', 'Recorded', 'Status'].map(h => (
+                    <th
+                      key={h}
+                      className="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest"
+                      style={{ color: 'var(--text-tertiary)' }}
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/50">
-                {ledger.map((entry) => (
+              <tbody>
+                {ledger.map((entry, i) => (
                   <tr
                     key={entry.incidentId}
                     onClick={() => navigate(`/decision/${entry.incidentId}`)}
-                    className="hover:bg-indigo-950/10 cursor-pointer transition-colors duration-150"
+                    className="cursor-pointer transition-colors duration-100"
+                    style={{
+                      borderBottom: i < ledger.length - 1 ? '1px solid var(--line)' : undefined,
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--surface-2)')}
+                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
                   >
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-semibold text-gray-200">
+                    <td className="px-5 py-4">
+                      <div className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
                         {entry.issueType || 'Unknown Issue'}
                       </div>
-                      <div className="text-xs text-gray-600 mt-0.5">
-                        ID: #{entry.incidentId.substring(0, 8)}...
+                      <div className="text-xs mt-0.5 font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                        #{entry.incidentId.substring(0, 8)}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-4">
                       <Badge variant={getPriorityBadgeVariant(entry.priority)}>
                         {entry.priority}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-300">
+                    <td className="px-5 py-4 text-sm max-w-xs" style={{ color: 'var(--text-secondary)' }}>
                       {entry.recommendation}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-4">
                       <Badge variant={getReadinessBadgeVariant(entry.decisionReadiness)}>
                         {entry.decisionReadiness}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-400 whitespace-nowrap">
+                    <td className="px-5 py-4 text-sm whitespace-nowrap" style={{ color: 'var(--text-tertiary)' }}>
                       {formatTimestamp(entry.timestamp)}
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-400 capitalize bg-indigo-950/40 px-2.5 py-1 rounded-full border border-indigo-900/30">
+                    <td className="px-5 py-4">
+                      <Badge variant="info" dot>
                         {entry.status}
-                      </span>
+                      </Badge>
                     </td>
                   </tr>
                 ))}
@@ -170,12 +219,18 @@ export default function LedgerPage() {
           </div>
         )}
 
-        {/* Empty State */}
+        {/* Empty state */}
         {!loading && !error && ledger.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center gap-3">
-            <span className="text-4xl">📭</span>
-            <p className="text-sm font-medium text-gray-400">No decisions recorded yet.</p>
-            <p className="text-xs text-gray-600">Entries will appear here once incidents are submitted and analysed.</p>
+            <svg className="w-10 h-10 text-slate-300 dark:text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.25} aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+              No decisions recorded yet.
+            </p>
+            <p className="text-xs max-w-xs" style={{ color: 'var(--text-tertiary)' }}>
+              Entries will appear here once community incidents are submitted and analysed.
+            </p>
           </div>
         )}
       </section>
@@ -187,7 +242,7 @@ export default function LedgerPage() {
           variant="primary"
           onClick={() => navigate('/submit')}
         >
-          Submit an Incident
+          Report an Incident
         </Button>
       </div>
     </>

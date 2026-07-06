@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   PageContainer,
@@ -128,11 +128,12 @@ const getEvidenceInfluence = (factor: string, value: string): { text: string; tr
       return v === 'true'
         ? { text: '↑ Priority Escalated (Active rain/precipitation hazard)', trend: 'up' }
         : { text: '→ Standard Priority (Dry weather conditions)', trend: 'neutral' };
-    case 'maintenanceHistory':
+    case 'maintenanceHistory': {
       const count = parseInt(v) || 0;
       return count > 0
         ? { text: `↑ Increased Risk (+${count} recent maintenance failures)`, trend: 'up' }
         : { text: '→ Normal Risk Profile (Clean maintenance history)', trend: 'neutral' };
+    }
     case 'criticalInfrastructure':
       return v === 'true'
         ? { text: '↑ Critical Path Escalation (Key assets affected)', trend: 'up' }
@@ -147,11 +148,12 @@ const getEvidenceInfluence = (factor: string, value: string): { text: string; tr
         return { text: `↑ Urgency Triage Trigger (${value} attention required)`, trend: 'up' };
       }
       return { text: `→ Base Driver (Urgency rated ${value})`, trend: 'neutral' };
-    case 'hazardCount':
+    case 'hazardCount': {
       const hCount = parseInt(v) || 0;
       return hCount > 0
         ? { text: `↑ Priority Safety Impact (${hCount} hazard(s) flagged)`, trend: 'up' }
         : { text: '→ Base Priority (No critical safety hazards flagged)', trend: 'neutral' };
+    }
     case 'crewAvailable':
       return v === 'true'
         ? { text: '↑ Immediate Response Viable (Crew dispatch ready)', trend: 'up' }
@@ -239,7 +241,7 @@ export default function DecisionPage() {
     },
   ];
 
-  const fetchDecision = async () => {
+  const fetchDecision = useCallback(async () => {
     if (!id) return;
     setLoading(true);
     setError(null);
@@ -252,11 +254,11 @@ export default function DecisionPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchDecision();
-  }, [id]);
+  }, [fetchDecision]);
 
   // Map factor names to nice readable titles and icons
   const getFactorMeta = (factor: string): { title: string; icon: JSX.Element } => {
@@ -303,9 +305,9 @@ export default function DecisionPage() {
 
         {/* Section Heading */}
         <SectionTitle
-          badge="Transparency Audit Trail"
-          title={`Decision Trail #${id ? id.substring(0, 8) : '—'}`}
-          subtitle="Chronological audit records compiled via Gemini incident understanding models and local operational knowledge base parameters."
+          badge="Decision Record"
+          title={`Decision #${id ? id.substring(0, 8) : '—'}`}
+          subtitle="Evidence-based evaluation compiled from citizen report, AI incident understanding, and operational knowledge context."
           gradient
           align="left"
           className="mb-8"
@@ -357,11 +359,11 @@ export default function DecisionPage() {
             )}
 
             {/* Decision Intelligence Pipeline Stepper */}
-            <Card variant="glass" padding="md" className="border-slate-800/80 bg-slate-950/20">
+            <Card variant="glass" padding="md" className="border-[var(--line)]">
               <div className="px-2 py-3">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-6 flex items-center gap-2">
-                  <svg className="w-4 h-4 text-brand-400 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <h3 className="text-xs font-semibold uppercase tracking-wider mb-5 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+                  <svg className="w-4 h-4 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                   </svg>
                   Decision Intelligence Pipeline
                 </h3>
@@ -375,18 +377,18 @@ export default function DecisionPage() {
 
                   {steps.map((step) => (
                     <div key={step.id} className="flex flex-col items-center text-center relative z-10 group">
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center border-2 border-emerald-500 bg-slate-900 text-emerald-400 shadow-glow-sm shadow-emerald-500/10 transition-all duration-300 group-hover:scale-110 group-hover:border-emerald-400 group-hover:shadow-emerald-500/20">
+                      <div className="w-11 h-11 rounded-full flex items-center justify-center border border-decision-500 bg-[var(--surface-1)] text-decision-500 transition-all duration-200 group-hover:bg-decision-50 dark:group-hover:bg-decision-950">
                         {step.icon}
                       </div>
-                      <h4 className="text-xs font-bold text-slate-200 mt-3 group-hover:text-white transition-colors duration-200">
+                      <h4 className="text-xs font-semibold mt-2.5 group-hover:text-decision-600 dark:group-hover:text-decision-400 transition-colors duration-150" style={{ color: 'var(--text-primary)' }}>
                         {step.label}
                       </h4>
-                      <p className="text-[10px] text-slate-400 mt-1 max-w-[140px] leading-relaxed">
+                      <p className="text-[10px] mt-1 max-w-[130px] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
                         {step.description}
                       </p>
-                      <div className="mt-2 text-[9px] font-semibold text-emerald-400 flex items-center gap-0.5 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
-                        Completed
+                      <div className="mt-1.5 text-[9px] font-semibold text-decision-600 dark:text-decision-400 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-decision-500 inline-block" />
+                        Done
                       </div>
                     </div>
                   ))}
@@ -396,21 +398,21 @@ export default function DecisionPage() {
                 <div className="flex md:hidden flex-col relative pl-4 border-l-2 border-emerald-500/40 gap-6 ml-4 py-2">
                   {steps.map((step) => (
                     <div key={step.id} className="relative flex gap-4 group">
-                      <div className="absolute -left-[25px] top-0.5 w-6 h-6 rounded-full border border-emerald-500 bg-slate-900 text-emerald-400 flex items-center justify-center text-xs shadow-glow-xs shadow-emerald-500/20">
+                      <div className="absolute -left-[25px] top-0.5 w-6 h-6 rounded-full border border-decision-500 bg-[var(--surface-1)] text-decision-500 flex items-center justify-center text-xs">
                         <div className="scale-75 flex items-center justify-center">
                           {step.icon}
                         </div>
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="text-xs font-bold text-slate-200 group-hover:text-emerald-300 transition-colors duration-200">
+                          <h4 className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>
                             {step.label}
                           </h4>
-                          <span className="text-[9px] font-semibold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded-full border border-emerald-500/10">
-                            Completed
+                          <span className="text-[9px] font-semibold text-decision-600 dark:text-decision-400">
+                            Done
                           </span>
                         </div>
-                        <p className="text-[10px] text-slate-400 mt-0.5">
+                        <p className="text-[10px] mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
                           {step.description}
                         </p>
                       </div>
@@ -424,7 +426,7 @@ export default function DecisionPage() {
               <div className="lg:col-span-8 flex flex-col gap-6">
               {/* Evidence pipeline inputs */}
               <Card variant="default" padding="lg">
-                <h3 className="text-lg font-bold text-slate-200 font-display mb-6 flex items-center gap-2">
+                <h3 className="text-base font-semibold mb-5 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
                   <CheckShieldIcon />
                   Evidence Pipeline Ingestion & Influence Signals
                 </h3>
@@ -453,8 +455,8 @@ export default function DecisionPage() {
                               {factorMeta.title}
                             </h4>
                             
-                            <Badge variant={item.source === 'analysis' ? 'primary' : 'default'}>
-                              {item.source === 'analysis' ? 'AI Ingestion' : 'Knowledge Context'}
+                            <Badge variant={item.source === 'analysis' ? 'primary' : 'info'}>
+                              {item.source === 'analysis' ? 'AI Analysis' : 'Knowledge Context'}
                             </Badge>
                             
                             {item.weight !== undefined && (
@@ -480,17 +482,17 @@ export default function DecisionPage() {
                 </div>
               </Card>
 
-              {/* Connector Arrow */}
-              <div className="flex justify-center py-2 pointer-events-none">
-                <svg className="w-6 h-6 text-slate-700 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 13l-7 7-7-7m14-6l-7 7-7-7" />
+              {/* Connector */}
+              <div className="flex justify-center py-1 pointer-events-none" aria-hidden="true">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} style={{ color: 'var(--line-strong)' }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
 
               {/* Decision Influence Mapping */}
-              <Card variant="glass" padding="md" className="border-slate-800 bg-slate-950/30">
+              <Card variant="glass" padding="md" className="border-[var(--line)]">
                 <div className="px-2 py-1">
-                  <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-4">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
                     Decision Influence Engine Mapping
                   </h3>
                   
@@ -506,13 +508,13 @@ export default function DecisionPage() {
                       </div>
                     </div>
                     
-                    <div className="hidden md:flex items-center justify-center pointer-events-none">
-                      <svg className="w-8 h-8 text-brand-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <div className="hidden md:flex items-center justify-center pointer-events-none" aria-hidden="true">
+                      <svg className="w-6 h-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
                     </div>
-                    <div className="flex md:hidden items-center justify-center py-1">
-                      <svg className="w-6 h-6 text-brand-500 rotate-90 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <div className="flex md:hidden items-center justify-center py-1" aria-hidden="true">
+                      <svg className="w-5 h-5 text-primary-500 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
                     </div>
@@ -537,24 +539,22 @@ export default function DecisionPage() {
                 </div>
               </Card>
 
-              {/* Connector Arrow */}
-              <div className="flex justify-center py-2 pointer-events-none">
-                <svg className="w-6 h-6 text-slate-700 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 13l-7 7-7-7m14-6l-7 7-7-7" />
+              {/* Connector */}
+              <div className="flex justify-center py-1 pointer-events-none" aria-hidden="true">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} style={{ color: 'var(--line-strong)' }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
 
               {/* Final Decision Card */}
-              <Card variant="glass" padding="lg" className="relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-brand-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-accent-500/5 rounded-full blur-2xl pointer-events-none" />
+              <Card variant="glass" padding="lg" className="border-[var(--line)]">
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                   <div>
-                    <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
-                      Recommended Operation
+                    <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+                      Recommended Action
                     </span>
-                    <h3 className="text-2xl font-bold text-slate-100 font-display mt-0.5">
+                    <h3 className="text-xl font-bold mt-0.5 font-display" style={{ color: 'var(--text-primary)' }}>
                       {decisionRecord.decision.recommendation}
                     </h3>
                   </div>
@@ -742,8 +742,8 @@ export default function DecisionPage() {
         )}
       </div>
 
-      <footer className="mt-12 pt-6 border-t border-line text-center text-xs text-slate-600">
-        CommUnity AI — Decision transparency and immutability powered by Google Cloud.
+      <footer className="mt-12 pt-5 border-t text-center text-xs" style={{ color: 'var(--text-tertiary)', borderColor: 'var(--line)' }}>
+        CommUnity AI — Evidence-based decisions. Published to the public record.
       </footer>
     </PageContainer>
   );

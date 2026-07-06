@@ -2,7 +2,99 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Base ───────────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+   THEME TOKENS
+   Light (default) and Dark (.dark on <html>)
+   All component classes reference these variables.
+════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Surfaces */
+  --surface-page: #f8fafc;
+  --surface-1:    #ffffff;
+  --surface-2:    #f1f5f9;
+  --surface-3:    #e2e8f0;
+  --surface-4:    #cbd5e1;
+  --surface-5:    #94a3b8;
+
+  /* Borders */
+  --line:         #e2e8f0;
+  --line-strong:  #cbd5e1;
+
+  /* Text */
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary:  #94a3b8;
+  --text-inverse:   #ffffff;
+
+  /* Component tints */
+  --bg-page:       #f8fafc;
+  --nav-bg:        rgba(255, 255, 255, 0.92);
+  --nav-border:    rgba(226, 232, 240, 0.8);
+  --card-shadow:   0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+
+  /* Glass surface (light) */
+  --glass-bg:     rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(226, 232, 240, 0.8);
+  --glass-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.08);
+
+  /* Focus ring */
+  --focus-ring: rgba(59, 130, 246, 0.35);
+
+  /* Scrollbar */
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-thumb-hover: #94a3b8;
+
+  /* Selection */
+  --selection-bg:   rgba(59, 130, 246, 0.18);
+  --selection-text: #1e40af;
+}
+
+html.dark {
+  /* Surfaces */
+  --surface-page: #080d18;
+  --surface-1:    #0f1729;
+  --surface-2:    #131e35;
+  --surface-3:    #1a2847;
+  --surface-4:    #1e304e;
+  --surface-5:    #2a3f65;
+
+  /* Borders */
+  --line:        #1e2d4a;
+  --line-strong: #2a3f65;
+
+  /* Text */
+  --text-primary:   #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-tertiary:  #64748b;
+  --text-inverse:   #0f172a;
+
+  /* Component tints */
+  --bg-page:      #080d18;
+  --nav-bg:       rgba(8, 13, 24, 0.88);
+  --nav-border:   rgba(30, 45, 74, 0.8);
+  --card-shadow:  0 1px 4px rgba(0,0,0,0.4), 0 4px 24px rgba(0,0,0,0.5);
+
+  /* Glass surface (dark) */
+  --glass-bg:     rgba(13, 22, 41, 0.65);
+  --glass-border: rgba(30, 45, 74, 0.7);
+  --glass-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 4px 24px rgba(0,0,0,0.4);
+
+  /* Focus ring */
+  --focus-ring: rgba(96, 165, 250, 0.45);
+
+  /* Scrollbar */
+  --scrollbar-track: #0f1729;
+  --scrollbar-thumb: #1e2d4a;
+  --scrollbar-thumb-hover: #2a3f65;
+
+  /* Selection */
+  --selection-bg:   rgba(96, 165, 250, 0.25);
+  --selection-text: #bfdbfe;
+}
+
+/* ── Base resets ─────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -13,6 +105,8 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Use system preference — overridden by .dark class via JS */
+  color-scheme: light dark;
 }
 
 html,
@@ -23,16 +117,17 @@ body,
 }
 
 body {
-  background-color: #080817;
-  color: #f1f5f9;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
   font-family: 'Inter', system-ui, sans-serif;
-  line-height: 1.6;
+  line-height: 1.65;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* ── Selection ──────────────────────────────────────────── */
 ::selection {
-  background-color: rgba(99, 102, 241, 0.3);
-  color: #e0e7ff;
+  background-color: var(--selection-bg);
+  color: var(--selection-text);
 }
 
 /* ── Custom scrollbar ───────────────────────────────────── */
@@ -41,38 +136,44 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f0f24;
+  background: var(--scrollbar-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: #2e3060;
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #4338ca;
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* ── Design-system component utilities ──────────────────── */
 @layer components {
+
   /**
    * .glass
-   * Glassmorphism surface — use on Card variant="glass"
+   * Frosted glass surface — light: white blur, dark: dark blur
    */
   .glass {
-    background: rgba(14, 14, 36, 0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.06),
-      0 4px 24px rgba(0, 0, 0, 0.4);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
   }
 
   /**
    * .gradient-text
-   * Brand gradient applied to text — use on SectionTitle gradient prop
+   * Civic gradient applied to text — civic blue to decision emerald
    */
   .gradient-text {
-    background: linear-gradient(135deg, #a5b4fc 0%, #22d3ee 100%);
+    background: linear-gradient(135deg, #2563eb 0%, #059669 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  html.dark .gradient-text {
+    background: linear-gradient(135deg, #60a5fa 0%, #34d399 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -80,13 +181,41 @@ body {
 
   /**
    * .focus-ring
-   * Keyboard-accessible focus outline matching brand color
+   * Keyboard-accessible focus outline — blue
    */
   .focus-ring {
-    @apply focus-visible:outline-none
-           focus-visible:ring-2
-           focus-visible:ring-brand-500
-           focus-visible:ring-offset-2
-           focus-visible:ring-offset-surface-1;
+    @apply focus-visible:outline-none;
+    @apply focus-visible:ring-2;
+    @apply focus-visible:ring-primary-500;
+    @apply focus-visible:ring-offset-2;
   }
+
+  /**
+   * .civic-card
+   * Consistent card with semantic surface and shadow
+   */
+  .civic-card {
+    background-color: var(--surface-1);
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    box-shadow: var(--card-shadow);
+  }
+
+  /**
+   * .section-label
+   * Consistent small uppercase label above headings
+   */
+  .section-label {
+    @apply text-xs font-semibold uppercase tracking-widest text-primary-600;
+  }
+
+  html.dark .section-label {
+    @apply text-primary-400;
+  }
+}
+
+/* ── Custom scrollbar utility class ─────────────────────── */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }

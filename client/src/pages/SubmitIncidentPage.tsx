@@ -1,13 +1,26 @@
 import { PageHeader } from '@/components';
 import IncidentForm from '@/components/IncidentForm';
 
+const STEPS = [
+  { step: '1', text: 'Your report is received and timestamped.' },
+  { step: '2', text: 'AI analyses the incident for severity and context.' },
+  { step: '3', text: 'A decision is generated and published to the public ledger.' },
+];
+
+const TIPS = [
+  'Be specific about the street, neighbourhood, or landmark.',
+  'Describe the impact on safety or the community.',
+  'Include a photo when possible — it improves analysis accuracy.',
+  'Avoid including personal information in your description.',
+];
+
 export default function SubmitIncidentPage() {
   return (
     <>
       <PageHeader
         badge="Incident Reporting"
-        title="Submit an Incident"
-        subtitle="Report a community concern. Your submission will be analysed and result in a transparent, auditable decision published on the public ledger."
+        title="Submit a Community Incident"
+        subtitle="Report a concern in your area. Your submission is analysed and results in a transparent, auditable decision published on the public ledger."
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -16,43 +29,65 @@ export default function SubmitIncidentPage() {
           <IncidentForm />
         </div>
 
-        {/* ── Sidebar info ─────────────────────────── */}
+        {/* ── Sidebar ──────────────────────────────── */}
         <aside className="flex flex-col gap-4">
+
           {/* What happens next */}
-          <div className="rounded-2xl border border-gray-800 bg-gray-900/50 p-6">
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">
+          <div
+            className="rounded-xl border p-5"
+            style={{ backgroundColor: 'var(--surface-1)', borderColor: 'var(--line)' }}
+          >
+            <h2
+              className="text-xs font-semibold uppercase tracking-widest mb-4"
+              style={{ color: 'var(--text-tertiary)' }}
+            >
               What happens next
             </h2>
-            <ol className="space-y-4" role="list">
-              {[
-                { step: '01', text: 'Your report is received and timestamped.' },
-                { step: '02', text: 'AI analyses the incident for severity and context.' },
-                { step: '03', text: 'A decision is generated and added to the public ledger.' },
-              ].map(({ step, text }) => (
+            <ol className="flex flex-col gap-4" role="list">
+              {STEPS.map(({ step, text }) => (
                 <li key={step} className="flex gap-3">
-                  <span className="text-xs font-black text-indigo-900/70 w-6 shrink-0 mt-0.5">
+                  <span
+                    className="w-6 h-6 rounded-full bg-primary-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5"
+                    aria-hidden="true"
+                  >
                     {step}
                   </span>
-                  <p className="text-sm text-gray-400 leading-relaxed">{text}</p>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                    {text}
+                  </p>
                 </li>
               ))}
             </ol>
           </div>
 
           {/* Tips */}
-          <div className="rounded-2xl border border-indigo-900/40 bg-indigo-900/10 p-6">
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-3">
-              Tips for a good report
+          <div
+            className="rounded-xl border p-5"
+            style={{
+              backgroundColor: 'var(--surface-2)',
+              borderColor: 'var(--line)',
+            }}
+          >
+            <h2
+              className="text-xs font-semibold uppercase tracking-widest mb-3 text-primary-700 dark:text-primary-400"
+            >
+              Tips for a better report
             </h2>
-            <ul className="space-y-2 text-sm text-gray-400">
-              {[
-                'Be specific about the location.',
-                'Describe the impact on the community.',
-                'Include a photo when possible.',
-                'Avoid personal information.',
-              ].map((tip) => (
-                <li key={tip} className="flex gap-2">
-                  <span className="text-indigo-500 mt-0.5 shrink-0">✓</span>
+            <ul className="flex flex-col gap-2.5">
+              {TIPS.map((tip) => (
+                <li key={tip} className="flex gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  <svg
+                    className="w-4 h-4 text-decision-600 dark:text-decision-400 shrink-0 mt-0.5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
                   {tip}
                 </li>
               ))}
