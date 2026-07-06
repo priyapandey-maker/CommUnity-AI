@@ -125,6 +125,76 @@ export default function DecisionPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const isFallback = decisionRecord?.analysis?.source === 'fallback';
+
+  const steps = [
+    {
+      id: 'report',
+      label: 'Citizen Report',
+      description: 'Signals ingested',
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      ),
+    },
+    {
+      id: 'understanding',
+      label: isFallback ? 'Rule-Based Understanding' : 'AI Incident Understanding',
+      description: isFallback ? 'Deterministic fallback classification' : 'Semantic classification via Gemini',
+      icon: isFallback ? (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      ) : (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      ),
+    },
+    {
+      id: 'knowledge',
+      label: 'Knowledge Context',
+      description: 'Enriched operational context',
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+        </svg>
+      ),
+    },
+    {
+      id: 'evaluation',
+      label: 'Evidence Evaluation',
+      description: 'Weighted telemetry evaluated',
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        </svg>
+      ),
+    },
+    {
+      id: 'decision',
+      label: 'Decision Generated',
+      description: 'Recommendation & priority generated',
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+    },
+    {
+      id: 'ledger',
+      label: 'Published to Ledger',
+      description: 'Immutably logged to public record',
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+      ),
+    },
+  ];
+
   const fetchDecision = async () => {
     if (!id) return;
     setLoading(true);
@@ -241,6 +311,71 @@ export default function DecisionPage() {
                 </span>
               </div>
             )}
+
+            {/* Decision Intelligence Pipeline Stepper */}
+            <Card variant="glass" padding="md" className="border-slate-800/80 bg-slate-950/20">
+              <div className="px-2 py-3">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-6 flex items-center gap-2">
+                  <svg className="w-4 h-4 text-brand-400 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Decision Intelligence Pipeline
+                </h3>
+                
+                {/* Desktop horizontal stepper */}
+                <div className="hidden md:grid grid-cols-6 relative gap-4">
+                  {/* Connecting lines */}
+                  <div className="absolute top-6 left-[8.33%] right-[8.33%] h-0.5 bg-slate-800 pointer-events-none z-0">
+                    <div className="h-full w-full bg-gradient-to-r from-brand-500 via-emerald-500 to-emerald-400 rounded-full" />
+                  </div>
+
+                  {steps.map((step) => (
+                    <div key={step.id} className="flex flex-col items-center text-center relative z-10 group">
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center border-2 border-emerald-500 bg-slate-900 text-emerald-400 shadow-glow-sm shadow-emerald-500/10 transition-all duration-300 group-hover:scale-110 group-hover:border-emerald-400 group-hover:shadow-emerald-500/20">
+                        {step.icon}
+                      </div>
+                      <h4 className="text-xs font-bold text-slate-200 mt-3 group-hover:text-white transition-colors duration-200">
+                        {step.label}
+                      </h4>
+                      <p className="text-[10px] text-slate-400 mt-1 max-w-[140px] leading-relaxed">
+                        {step.description}
+                      </p>
+                      <div className="mt-2 text-[9px] font-semibold text-emerald-400 flex items-center gap-0.5 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
+                        Completed
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Mobile vertical stepper */}
+                <div className="flex md:hidden flex-col relative pl-4 border-l-2 border-emerald-500/40 gap-6 ml-4 py-2">
+                  {steps.map((step) => (
+                    <div key={step.id} className="relative flex gap-4 group">
+                      <div className="absolute -left-[25px] top-0.5 w-6 h-6 rounded-full border border-emerald-500 bg-slate-900 text-emerald-400 flex items-center justify-center text-xs shadow-glow-xs shadow-emerald-500/20">
+                        <div className="scale-75 flex items-center justify-center">
+                          {step.icon}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-xs font-bold text-slate-200 group-hover:text-emerald-300 transition-colors duration-200">
+                            {step.label}
+                          </h4>
+                          <span className="text-[9px] font-semibold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded-full border border-emerald-500/10">
+                            Completed
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-400 mt-0.5">
+                          {step.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             {/* Left Column: Primary Recommendation & Evidence Timeline */}
