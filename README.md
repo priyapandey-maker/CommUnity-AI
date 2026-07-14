@@ -1,5 +1,3 @@
-Ran command: `find . -maxdepth 2 -type d -print`
-Viewed implementation_plan.md:1-73
 
 # CommUnity‑AI  
 
